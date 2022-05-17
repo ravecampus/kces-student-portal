@@ -2,7 +2,12 @@
     <div class="container">
       <div class="row">
           <div class="col-md-12">
-                <div class="table-responsive">
+                <div class="card">
+                    <div class="card-body" v-if="gradeStatus.grade == null">
+                        No posted of Grade
+                    </div>
+                </div>
+                <div class="table-responsive" v-if="gradeStatus.grade != null">
                     <table class="table table-bordered table-dark">
                         <thead>
                             <tr>
@@ -247,7 +252,6 @@ export default {
         userExtract(id){
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.get('api/student/'+id).then(res=>{
-                    console.log(res.data);
                     this.getMyGrade(res.data.id);
                 });
             });
@@ -344,8 +348,6 @@ export default {
     },
     mounted(){
         this.subjectData();
-      
-        // this.studentwithAdviser();
         this.userExtract(window.Laravel.user.id);
         
     }

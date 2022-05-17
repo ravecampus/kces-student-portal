@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('teacher-advisory', TeacherAdvisoryController::class);
     Route::get('grade/student/{id}', [GradeController::class,'studentGrade']);
     Route::resource('grade', GradeController::class);
+    Route::get('schedule/ind/{id}', [ScheduleController::class,'getSchedule']);
     Route::resource('schedule', ScheduleController::class);
 
 });

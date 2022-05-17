@@ -18,7 +18,7 @@
                     <router-link :to="{name:'sgrade'}" >Grade</router-link>
                 </li>
                 <li>
-                    <a href="#">Schedule</a>
+                    <router-link :to="{name:'sschedule'}">Schedule</router-link>
                 </li>
                 <!-- <li>
                     <a href="#">Home 3</a>

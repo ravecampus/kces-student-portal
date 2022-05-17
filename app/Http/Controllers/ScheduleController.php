@@ -111,7 +111,23 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'subject'=>'required',
+            'day'=>'required',
+            'time_from'=>'required',
+            'time_to'=>'required',
+        ]);
+        $from = $request->time_from;
+        $to = $request->time_to;
+
+        $sch = Schedule::find($id);
+        $sch->subject_id  = $request->subject;
+        $sch->sday = $request->day;
+        $sch->stime_from = Carbon::createFromTime($from['hours'], $from['minutes'],$from['seconds']);
+        $sch->stime_to = Carbon::createFromTime($to['hours'], $to['minutes'], $to['seconds']);
+        $sch->save();
+    
+        return response()->json($sch, 200);
     }
 
     /**
@@ -123,5 +139,12 @@ class ScheduleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getSchedule($id){
+        $sch = Schedule::join('subjects', 'subjects.id','=', 'schedules.subject_id')
+        ->select(['schedules.*','subjects.subject_name'])
+        ->where('schedules.teacher_advisory_id', $id)->get();
+        return response()->json($sch,200);
     }
 }

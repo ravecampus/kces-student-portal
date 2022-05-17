@@ -49,6 +49,7 @@
                                <th>Subject</th>
                                <th>Day</th>
                                <th>Time</th>
+                               <th></th>
                            </tr>
                        </thead>
                        <tbody>
@@ -56,6 +57,11 @@
                                <td>{{list.subject_name}}</td>
                                <td>{{ extractDay(list.sday) }}</td>
                                <td>{{ conver12Hour(list.stime_from) }} - {{ conver12Hour(list.stime_to) }}</td>
+                               <td>
+                                   <div class="btn-group">
+                                       <button type="button" @click="editSchedule(list)" class="btn btn-warning btn-sm">Edit</button>
+                                   </div>
+                               </td>
                            </tr>
                        </tbody>
                    </table>
@@ -96,8 +102,6 @@ export default {
     data(){
         return{
             post:{
-                subject:1,
-                day:1,
             },
             errors:[],
             btn_cap:'Save',
@@ -135,17 +139,34 @@ export default {
             return ret;
         },
         saveSchedule(){
-            this.btn_cap = "Saving...";
-            this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.post('api/schedule',this.post).then(res=>{
-                    this.btn_cap = "Save";
-                    this.listSchedule();
-                    this.post = {};
-                }).catch(err=>{
-                    this.btn_cap = "Save";
-                    this.errors = err.response.data.errors
+            if(this.post.id > 0 ){
+                this.btn_cap = "Saving...";
+                this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                    this.$axios.put('api/schedule/'+this.post.id,this.post).then(res=>{
+                        this.btn_cap = "Save";
+                        this.listSchedule();
+                        this.post = {};
+                        this.errors = [];
+                    }).catch(err=>{
+                        this.btn_cap = "Save";
+                        this.errors = err.response.data.errors
+                    });
                 });
-            });
+            }else{
+                this.btn_cap = "Saving...";
+                this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                    this.$axios.post('api/schedule',this.post).then(res=>{
+                        this.btn_cap = "Save";
+                        this.listSchedule();
+                        this.post = {};
+                        this.errors = [];
+                    }).catch(err=>{
+                        this.btn_cap = "Save";
+                        this.errors = err.response.data.errors
+                    });
+                });
+            }
+          
         },
         listSchedule(url='api/schedule'){
             this.$axios.get('sanctum/csrf-cookie').then(response => {
@@ -174,6 +195,15 @@ export default {
                 }
             });
             return ret;
+        },
+        editSchedule(data){
+            this.errors = [];
+            this.post.id = data.id;
+            this.post.subject = data.subject_id;
+            this.post.day = data.sday;
+            // this.post.time_to = new Date().getTime(data.stime_to);
+            // this.post.time_from = new Date(data.stime_from);
+            this.btn_cap = "Save Changes"
         }
     },
     mounted(){

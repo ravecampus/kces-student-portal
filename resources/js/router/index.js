@@ -22,6 +22,7 @@ import Student from '../student/BaseStudent';
 import SAnnouncement from '../student/SAnnouncement';
 import SProfile from '../student/SProfile';
 import SGrade from '../student/SGrade';
+import SSchedule from '../student/SSchedule';
 
 
 export const routes = [
@@ -91,6 +92,11 @@ export const routes = [
                 name:'sgrade',
                 path:'/student/mygrade',
                 component: SGrade
+            },
+            {
+                name:'sschedule',
+                path:'/student/schedule',
+                component: SSchedule
             },
         ]
     },
