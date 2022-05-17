@@ -3,6 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Schedule;
+use App\Models\Teacher;
+use App\Models\Advisory;
+use App\Models\TeacherAdvisory;
+use Illuminate\Support\Facades\Auth;
 
 class ScheduleController extends Controller
 {
@@ -11,9 +17,25 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $search = $request->search;
+
+        $length = $request->length;
+        $column = $request->column;
+        $dir = $request->dir;
+        $archive = $request->archive;
+        $searchValue = $request->search;
+        $query = Schedule::join('subjects', 'subjects.id','=', 'schedules.subject_id')
+        ->select(['schedules.*','subjects.subject_name']);
+    
+        if($searchValue){
+            $query->where(function($query) use ($searchValue){
+                $query->where('subjects.subject_name', 'like', '%'.$searchValue.'%');
+            });
+        }
+       
+        return response()->json($query->get(), 200);
     }
 
     /**
@@ -34,7 +56,28 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+        $request->validate([
+            'subject'=>'required',
+            'day'=>'required',
+            'time_from'=>'required',
+            'time_to'=>'required',
+        ]);
+
+        $auth = Auth::id();
+        $teacher = Teacher::where('user_id', $auth)->first()->id;
+        $ad = Advisory::where('teacher_id', $teacher)->first()->id;
+        $tad = TeacherAdvisory::where('advisory_id', $ad)->first()->id;
+        $from = $request->time_from;
+        $to = $request->time_to;
+        $sch = Schedule::create([
+            'subject_id'=>$request->subject,
+            'sday'=>$request->day,
+            'stime_from'=>Carbon::createFromTime($from['hours'], $from['minutes'],$from['seconds']),
+            'stime_to'=>Carbon::createFromTime($to['hours'], $to['minutes'], $to['seconds']),
+            'teacher_advisory_id'=>$tad,
+        ]);
+        return response()->json($sch, 200);
     }
 
     /**

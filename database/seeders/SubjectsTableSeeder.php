@@ -73,6 +73,12 @@ class SubjectsTableSeeder extends Seeder
             'id' => 12,
             'subject_name' => 'Homeroom Guidance',
         ]);
+
+        DB::table('school_years')->delete();
+        DB::table('school_years')->insert([
+            'id' => 1,
+            'sy_name' => 2022,
+        ]);
       
     }
 }

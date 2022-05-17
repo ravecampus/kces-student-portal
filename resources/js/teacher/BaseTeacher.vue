@@ -98,6 +98,8 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.get('api/teacher/'+id).then(res=>{
                   this.user = res.data;
+                  window.advisory_id = res.data.advise.id;
+                  console.log("user",res.data)
                 });
             });
         },

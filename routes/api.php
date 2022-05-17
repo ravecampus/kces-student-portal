@@ -11,6 +11,7 @@ use App\Http\Controllers\AdvisoryController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherAdvisoryController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,5 +58,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('teacher-advisory', TeacherAdvisoryController::class);
     Route::get('grade/student/{id}', [GradeController::class,'studentGrade']);
     Route::resource('grade', GradeController::class);
+    Route::resource('schedule', ScheduleController::class);
 
 });

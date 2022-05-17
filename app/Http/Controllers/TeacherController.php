@@ -233,10 +233,19 @@ class TeacherController extends Controller
 
 
     public function passwordChange(Request $request){
-        $request->validate([
-            'username' => 'required',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        $ck = User::where('username', $request->username)->find($request->id);
+        if(isset($ck)){
+            $request->validate([
+                'username' => 'required',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+        }else{
+            $request->validate([
+                'username' => 'required|unique:users,username',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+        }
+        
 
         $user = User::find($request->id);
         $user->username = $request->username;

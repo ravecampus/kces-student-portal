@@ -18,6 +18,7 @@ class CreateAnnouncementsTable extends Migration
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->datetime('announce_date')->nullable();
+            $table->date('expiry_date')->nullable();
             $table->integer('teacher_id')->nullable();
             $table->integer('deleted')->default(0);
             $table->timestamps();

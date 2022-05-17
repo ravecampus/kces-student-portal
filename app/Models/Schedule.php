@@ -9,5 +9,11 @@ class Schedule extends Model
 {
     use HasFactory;
     protected $table = 'schedules';
-    protected $fillable = ['subject_id','sday','stime', 'advisory_id'];
+    protected $fillable = [
+        'subject_id',
+        'sday',
+        'stime_from', 
+        'stime_to', 
+        'teacher_advisory_id'
+    ];
 }

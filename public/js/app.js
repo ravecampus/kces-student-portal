@@ -21418,6 +21418,8 @@ __webpack_require__.r(__webpack_exports__);
       this.$axios.get('sanctum/csrf-cookie').then(function (res) {
         _this2.$axios.get('api/teacher/' + id).then(function (res) {
           _this2.user = res.data;
+          window.advisory_id = res.data.advise.id;
+          console.log("user", res.data);
         });
       });
     },
@@ -22532,12 +22534,149 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _vuepic_vue_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @vuepic/vue-datepicker */ "./node_modules/@vuepic/vue-datepicker/dist/vue-datepicker.es.js");
+/* harmony import */ var _vuepic_vue_datepicker_dist_main_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @vuepic/vue-datepicker/dist/main.css */ "./node_modules/@vuepic/vue-datepicker/dist/main.css");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+
+
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    Datepicker: _vuepic_vue_datepicker__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  setup: function setup() {
+    var time = (0,vue__WEBPACK_IMPORTED_MODULE_2__.ref)({
+      hours: new Date().getHours(),
+      minutes: new Date().getMinutes()
+    });
+
+    var conver12Hour = function conver12Hour(time) {
+      time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+      if (time.length > 1) {
+        // If time format correct
+        time = time.slice(1); // Remove full string match value
+
+        time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+
+        time[0] = +time[0] % 12 || 12; // Adjust hours
+      }
+
+      return time.join('');
+    };
+
+    return {
+      time: time
+    };
+  },
   data: function data() {
     return {
-      post: {},
-      errors: []
+      post: {
+        subject: 1,
+        day: 1
+      },
+      errors: [],
+      btn_cap: 'Save',
+      subjects: [],
+      days: [{
+        'lbl': 'Monday',
+        'val': 1
+      }, {
+        'lbl': 'Tuesday',
+        'val': 2
+      }, {
+        'lbl': 'Wednesday',
+        'val': 3
+      }, {
+        'lbl': 'Thursday',
+        'val': 4
+      }, {
+        'lbl': 'Friday',
+        'val': 5
+      }],
+      schedule: {},
+      schedules: [],
+      tableData: {
+        search: ""
+      }
     };
+  },
+  methods: {
+    subjectData: function subjectData() {
+      var _this = this;
+
+      this.$axios.get('sanctum/csrf-cookie').then(function (res) {
+        _this.$axios.get('api/subject/list/').then(function (res) {
+          _this.subjects = res.data;
+        });
+      });
+    },
+    extractSubject: function extractSubject(id) {
+      var ret = "";
+      $.each(this.subjects, function (key, value) {
+        if (value.id == id) {
+          ret = value.subject_name;
+        }
+      });
+      return ret;
+    },
+    saveSchedule: function saveSchedule() {
+      var _this2 = this;
+
+      this.btn_cap = "Saving...";
+      this.$axios.get('sanctum/csrf-cookie').then(function (res) {
+        _this2.$axios.post('api/schedule', _this2.post).then(function (res) {
+          _this2.btn_cap = "Save";
+
+          _this2.listSchedule();
+
+          _this2.post = {};
+        })["catch"](function (err) {
+          _this2.btn_cap = "Save";
+          _this2.errors = err.response.data.errors;
+        });
+      });
+    },
+    listSchedule: function listSchedule() {
+      var _this3 = this;
+
+      var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'api/schedule';
+      this.$axios.get('sanctum/csrf-cookie').then(function (response) {
+        _this3.$axios.get(url, {
+          params: _this3.tableData
+        }).then(function (res) {
+          _this3.schedules = res.data;
+        })["catch"](function (err) {});
+      });
+    },
+    conver12Hour: function conver12Hour(time) {
+      time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+      if (time.length > 1) {
+        // If time format correct
+        time = time.slice(1); // Remove full string match value
+
+        time[5] = +time[0] < 12 ? ' AM' : ' PM'; // Set AM/PM
+
+        time[0] = +time[0] % 12 || 12; // Adjust hours
+      }
+
+      return time.join('');
+    },
+    extractDay: function extractDay(day) {
+      var ret = "";
+      console.log(this.days, day);
+      $.each(this.days, function (key, value) {
+        if (value.val == day) {
+          ret = value.lbl;
+        }
+      });
+      return ret;
+    }
+  },
+  mounted: function mounted() {
+    this.listSchedule();
+    this.subjectData();
   }
 });
 
@@ -28421,43 +28560,187 @@ __webpack_require__.r(__webpack_exports__);
 var _hoisted_1 = {
   "class": "container"
 };
-var _hoisted_2 = {
-  "class": "row"
-};
-var _hoisted_3 = {
-  "class": "col-md-6 p-3 m-2"
-};
-var _hoisted_4 = {
-  "class": "form-group border-right"
-};
 
-var _hoisted_5 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "ID Number: ", -1
+var _hoisted_2 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", null, "Set up Schedule", -1
 /* HOISTED */
 );
 
-var _hoisted_6 = {
+var _hoisted_3 = {
+  "class": "row"
+};
+var _hoisted_4 = {
+  "class": "col-md-6 p-3 border-right"
+};
+var _hoisted_5 = {
+  "class": "form-group"
+};
+
+var _hoisted_6 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Subject", -1
+/* HOISTED */
+);
+
+var _hoisted_7 = ["value"];
+var _hoisted_8 = {
   key: 0,
   "class": "errors-material"
 };
+var _hoisted_9 = {
+  "class": "form-group"
+};
 
-var _hoisted_7 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
+var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Day", -1
+/* HOISTED */
+);
+
+var _hoisted_11 = ["value"];
+var _hoisted_12 = {
+  key: 0,
+  "class": "errors-material"
+};
+var _hoisted_13 = {
+  "class": "row mb-3"
+};
+var _hoisted_14 = {
+  "class": "form-group col-md-6"
+};
+
+var _hoisted_15 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Time From:", -1
+/* HOISTED */
+);
+
+var _hoisted_16 = {
+  key: 0,
+  "class": "errors-material"
+};
+var _hoisted_17 = {
+  "class": "form-group col-md-6"
+};
+
+var _hoisted_18 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Time To:", -1
+/* HOISTED */
+);
+
+var _hoisted_19 = {
+  key: 0,
+  "class": "errors-material"
+};
+var _hoisted_20 = {
+  "class": "row"
+};
+var _hoisted_21 = {
+  "class": "btn-group col-md-12"
+};
+var _hoisted_22 = {
   "class": "col-md-6"
-}, null, -1
+};
+var _hoisted_23 = {
+  "class": "mb-3"
+};
+var _hoisted_24 = {
+  "class": "table-responsive"
+};
+var _hoisted_25 = {
+  "class": "table table-striped table-sm"
+};
+
+var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("thead", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Subject"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Day"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", null, "Time")])], -1
 /* HOISTED */
 );
 
 function render(_ctx, _cache, $props, $setup, $data, $options) {
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [_hoisted_5, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
-    type: "text",
+  var _component_Datepicker = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Datepicker");
+
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_1, [_hoisted_2, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [_hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
     "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
-      return $data.post.id_number = $event;
+      return $data.post.subject = $event;
     }),
     "class": "form-control"
-  }, null, 512
-  /* NEED_PATCH */
-  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.post.id_number]]), $data.errors.id_number ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.id_number[0]), 1
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.subjects, function (list, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      key: index,
+      value: list.id
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.subject_name), 9
+    /* TEXT, PROPS */
+    , _hoisted_7);
+  }), 128
+  /* KEYED_FRAGMENT */
+  )), $data.errors.subject ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.subject[0]), 1
   /* TEXT */
-  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), _hoisted_7])]);
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.post.subject]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [_hoisted_10, (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("select", {
+    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+      return $data.post.day = $event;
+    }),
+    "class": "form-control"
+  }, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.days, function (list, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("option", {
+      key: index,
+      value: list.val
+    }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.lbl), 9
+    /* TEXT, PROPS */
+    , _hoisted_11);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))], 512
+  /* NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, $data.post.day]]), $data.errors.subject ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_12, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.subject[0]), 1
+  /* TEXT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_14, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Datepicker, {
+    modelValue: $data.post.time_from,
+    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+      return $data.post.time_from = $event;
+    }),
+    timePicker: "",
+    is24: false
+  }, null, 8
+  /* PROPS */
+  , ["modelValue"]), $data.errors.time_from ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.time_from[0]), 1
+  /* TEXT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [_hoisted_18, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Datepicker, {
+    modelValue: $data.post.time_to,
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+      return $data.post.time_to = $event;
+    }),
+    timePicker: "",
+    is24: false
+  }, null, 8
+  /* PROPS */
+  , ["modelValue"]), $data.errors.time_to ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("span", _hoisted_19, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.errors.time_to[0]), 1
+  /* TEXT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    onClick: _cache[4] || (_cache[4] = function ($event) {
+      return $options.saveSchedule();
+    }),
+    "class": "btn btn-primary"
+  }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.btn_cap), 1
+  /* TEXT */
+  )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+      return $data.tableData.search = $event;
+    }),
+    placeholder: "Search ...",
+    onKeyup: _cache[6] || (_cache[6] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withKeys)(function ($event) {
+      return $options.listSchedule();
+    }, ["enter"])),
+    "class": "form-control"
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.tableData.search]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_25, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.schedules, function (list, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+      key: index
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.subject_name), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.extractDay(list.sday)), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.conver12Hour(list.stime_from)) + " - " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.conver12Hour(list.stime_to)), 1
+    /* TEXT */
+    )]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))])])])])])]);
 }
 
 /***/ }),
@@ -77692,7 +77975,7 @@ function compileToFunction(template, options) {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"_args":[[{"raw":"axios@^0.21","scope":null,"escapedName":"axios","name":"axios","rawSpec":"^0.21","spec":">=0.21.0 <0.22.0","type":"range"},"C:\\\\laragon\\\\www\\\\kces-student-portal"]],"_from":"axios@>=0.21.0 <0.22.0","_hasShrinkwrap":false,"_id":"axios@0.21.4","_inCache":true,"_location":"/axios","_nodeVersion":"12.21.0","_npmOperationalInternal":{"host":"s3://npm-registry-packages","tmp":"tmp/axios_0.21.4_1630942542911_0.9205474689335591"},"_npmUser":{"name":"jasonsaayman","email":"jasonsaayman@gmail.com"},"_npmVersion":"7.20.3","_phantomChildren":{},"_requested":{"raw":"axios@^0.21","scope":null,"escapedName":"axios","name":"axios","rawSpec":"^0.21","spec":">=0.21.0 <0.22.0","type":"range"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_shasum":"c67b90dc0568e5c1cf2b0b858c43ba28e2eda575","_shrinkwrap":null,"_spec":"axios@^0.21","_where":"C:\\\\laragon\\\\www\\\\kces-student-portal","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"directories":{},"dist":{"integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","shasum":"c67b90dc0568e5c1cf2b0b858c43ba28e2eda575","tarball":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","fileCount":44,"unpackedSize":375349,"npm-signature":"-----BEGIN PGP SIGNATURE-----\\r\\nVersion: OpenPGP.js v3.0.13\\r\\nComment: https://openpgpjs.org\\r\\n\\r\\nwsFcBAEBCAAQBQJhNjVPCRA9TVsSAnZWagAA0foP/3y+vPMPeoBU5dw1GOw+\\npuX9t90nj+UaF116uDtZy1nmLl3CI+75T40P6OfbRq8AqTtIZ3GAb1hgFWDD\\njftxo/P6kNlQrokmw5Nlpz3orM2Pobmk/TW56vd4CknIBw8PlBW+JQHZpPfY\\nKjCg2rCv3XGqcFX8FGxE9sagkaMmomAZSNhw+86IsqWn4PYwL52prAVK1TNF\\nBGoJgQCQ7Gh0XGa50SINUuVfnZ/SpYLGMFV+vlZGqVSOCS+Al/SshpldSA0A\\nhCf7YUcLgqcej+l+EHFLFqO6iq78VayCTjqgSDM6USC8a17zfAaq/0bJdEht\\nM1e3OhtcnUyDC00I5PPGv1PW3N1J8eptu6QyREsPoHRUqVGX0u1eHTB3Mbr2\\n8VLwYal453QJ9FN7pW24U7ZCJy953gtJ99DY0KIXcl22+U1X0pNlzYhoghUh\\nBpajCP2kDps7SmcRQ0oGCefebuTT+czP7lAzHtF5tAg0FFtMt6X5I8bQahL4\\n/22ITU9SdY1+SZRj+oWrj7CJAfjODRd9VmAMbwxgTnStzeWLvU/Cwc1l6euZ\\nPh2TnA3smLJ4McjaP9Mj7PAXxGVhmwoMLnAcqpu01L7Dy2C8SdZ+lgy/+1Mz\\ncYW4OibWQjCM8/eGmFGS82R2Tg20Mx+aZ09YQo1mjYxZ3SvTmlVh1Ee7Xvc2\\nPkX7\\r\\n=rPmy\\r\\n-----END PGP SIGNATURE-----\\r\\n","signatures":[{"keyid":"SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA","sig":"MEUCIGkkAJ1lvuGlmUhSCUk69Ot9u/hhH8bBd+7yA7cyaIIAAiEA2hD60EdaF6ud13eUjHo/zRR0MdZ8boETX3PqRwsrwZU="}]},"gitHead":"84f009d862e06ef7339f0d45da061a15749ddfee","homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","maintainers":[{"name":"mzabriskie","email":"mzabriskie@gmail.com"},{"name":"nickuraltsev","email":"nick.uraltsev@gmail.com"},{"name":"emilyemorehouse","email":"emilyemorehouse@gmail.com"},{"name":"jasonsaayman","email":"jasonsaayman@gmail.com"}],"name":"axios","optionalDependencies":{},"readme":"ERROR: No README data found!","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
+module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBundle":false,"_integrity":"sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==","_location":"/axios","_phantomChildren":{},"_requested":{"type":"range","registry":true,"raw":"axios@^0.21","name":"axios","escapedName":"axios","rawSpec":"^0.21","saveSpec":null,"fetchSpec":"^0.21"},"_requiredBy":["#DEV:/"],"_resolved":"https://registry.npmjs.org/axios/-/axios-0.21.4.tgz","_shasum":"c67b90dc0568e5c1cf2b0b858c43ba28e2eda575","_spec":"axios@^0.21","_where":"C:\\\\laragon\\\\www\\\\kces-student-portal","author":{"name":"Matt Zabriskie"},"browser":{"./lib/adapters/http.js":"./lib/adapters/xhr.js"},"bugs":{"url":"https://github.com/axios/axios/issues"},"bundleDependencies":false,"bundlesize":[{"path":"./dist/axios.min.js","threshold":"5kB"}],"dependencies":{"follow-redirects":"^1.14.0"},"deprecated":false,"description":"Promise based HTTP client for the browser and node.js","devDependencies":{"coveralls":"^3.0.0","es6-promise":"^4.2.4","grunt":"^1.3.0","grunt-banner":"^0.6.0","grunt-cli":"^1.2.0","grunt-contrib-clean":"^1.1.0","grunt-contrib-watch":"^1.0.0","grunt-eslint":"^23.0.0","grunt-karma":"^4.0.0","grunt-mocha-test":"^0.13.3","grunt-ts":"^6.0.0-beta.19","grunt-webpack":"^4.0.2","istanbul-instrumenter-loader":"^1.0.0","jasmine-core":"^2.4.1","karma":"^6.3.2","karma-chrome-launcher":"^3.1.0","karma-firefox-launcher":"^2.1.0","karma-jasmine":"^1.1.1","karma-jasmine-ajax":"^0.1.13","karma-safari-launcher":"^1.0.0","karma-sauce-launcher":"^4.3.6","karma-sinon":"^1.0.5","karma-sourcemap-loader":"^0.3.8","karma-webpack":"^4.0.2","load-grunt-tasks":"^3.5.2","minimist":"^1.2.0","mocha":"^8.2.1","sinon":"^4.5.0","terser-webpack-plugin":"^4.2.3","typescript":"^4.0.5","url-search-params":"^0.10.0","webpack":"^4.44.2","webpack-dev-server":"^3.11.0"},"homepage":"https://axios-http.com","jsdelivr":"dist/axios.min.js","keywords":["xhr","http","ajax","promise","node"],"license":"MIT","main":"index.js","name":"axios","repository":{"type":"git","url":"git+https://github.com/axios/axios.git"},"scripts":{"build":"NODE_ENV=production grunt build","coveralls":"cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js","examples":"node ./examples/server.js","fix":"eslint --fix lib/**/*.js","postversion":"git push && git push --tags","preversion":"npm test","start":"node ./sandbox/server.js","test":"grunt test","version":"npm run build && grunt version && git add -A dist && git add CHANGELOG.md bower.json package.json"},"typings":"./index.d.ts","unpkg":"dist/axios.min.js","version":"0.21.4"}');
 
 /***/ })
 
