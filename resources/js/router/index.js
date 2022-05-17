@@ -16,6 +16,7 @@ import SearchStudentInfo from '../teacher/SearchStudentInfo';
 import TProfile from '../teacher/TProfile';
 import TGrade from '../teacher/TGrade';
 import TGradeDownload from '../teacher/TGradeDownload';
+import TSchedule from '../teacher/TSchedule';
 
 import Student from '../student/BaseStudent';
 import SAnnouncement from '../student/SAnnouncement';
@@ -122,6 +123,11 @@ export const routes = [
                 name:'tgradedownload',
                 path:'/teacher/grade/download/:student_id',
                 component: TGradeDownload
+            },
+            {
+                name:'tschedule',
+                path:'/teacher/schedule/',
+                component: TSchedule
             },
         ]
     },

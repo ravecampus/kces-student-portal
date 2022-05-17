@@ -33,6 +33,7 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::put('user/{id}', [AuthController::class,'adminprofile']);
+    Route::post('user/password', [AuthController::class,'adminpassword']);
     Route::post('teacher/password', [TeacherController::class,'passwordChange']);
     Route::post('teacher/profile', [TeacherController::class,'profile']);
     Route::post('teacher/credential', [TeacherController::class,'credential']);

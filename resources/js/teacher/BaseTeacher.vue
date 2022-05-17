@@ -22,7 +22,7 @@
 	            </ul>
 	          </li>
 	          <li>
-	              <a href="#">Schedule</a>
+	              <router-link :to="{name:'tschedule'}">Schedule</router-link>
 	          </li>
 	        </ul>
 

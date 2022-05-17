@@ -65,11 +65,30 @@ class AuthController extends Controller
     }
 
     public function adminprofile(Request $request, $id){
+        $request->validate([
+                
+            'email' => 'required|string|email',
+            'username' => 'required|string',
+        ]);
+
         $user = User::find($id);
-        $user->usernamme = $request->username;
+        $user->username = $request->username;
         $user->email = $request->email;
         $user->save();
-        return response()->jason($user, 200);
+        return response()->json($user, 200);
+    }
+
+    public function adminpassword(Request $request){
+
+        $request->validate([
+            'username' => 'required',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+        $pass = User::find($request->id);
+        $pass->password = bcrypt($request->password);
+        $pass->save();
+
+        return response()->json($pass, 200);
     }
 
 }

@@ -122,14 +122,6 @@ export default {
         }
     },
     methods:{
-        userExtract(id){
-            this.$axios.get('sanctum/csrf-cookie').then(response=>{
-                this.$axios.get('api/teacher/'+id).then(res=>{
-                  let data = res.data;
-                  this.post = data;
-                });
-            });
-        },
         showChangePassword(){
             $('.changes-password').modal('show');
         },
@@ -148,7 +140,7 @@ export default {
         savePassword(){
             this.btn_cap_ = "Saving...";
             this.$axios.get('sanctum/csrf-cookie').then(response=>{
-                this.$axios.post('api/teacher/password', this.post).then(res=>{
+                this.$axios.post('api/user/password', this.post).then(res=>{
                     this.btn_cap_ = "Save";
                     $('.changes-password').modal('hide');
                 }).catch(err=>{

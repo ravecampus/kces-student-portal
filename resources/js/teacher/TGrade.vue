@@ -43,8 +43,8 @@
                                 <td>{{ extractSex(list.sex) }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
-                                        <button type="button" @click="viewSummaryGrade(list)" class="btn btn-warning btn-sm">view summary</button>
-                                        <button type="button" @click="showGrade(list)" class="btn btn-success btn-sm">grade</button>
+                                        <button type="button" @click="viewSummaryGrade(list)" class="btn btn-warning btn-sm">view</button>
+                                        <button type="button" @click="showGrade(list)" class="btn btn-success btn-sm">edit</button>
                                         <!-- <button type="button" @click="editInfo(list)" class="btn btn-warning btn-sm">Edit Info</button> -->
                                     </div>
                                 </td>
@@ -373,7 +373,6 @@ export default {
                         this.tableData.advisory_id = data.advise.id;
                         this.listOfStudentA();
                   }
-                //   this.userAdvise(res.data.id)
                 });
             });
         },
@@ -389,6 +388,7 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.get('api/grade/'+this.post.id).then(res=>{
                    this.gradeStatus = res.data;
+                   console.log(res.data);
                 });
             });
         },
@@ -452,12 +452,20 @@ export default {
         },
         viewSummaryGrade(data){
             this.$router.push({name:'tgradedownload',params:{'student_id':data.student_id}});
+        },
+        checkSubject(data){
+            // this.post = data;
+            // this.listOfGrade();
+            // if(this.gradeStatus.grade != null){
+            //     return  true;
+            // }
+
+            // return false;
         }
     },
     mounted(){
         this.subjectData();
-        this.listOfGrade()
-        // this.studentwithAdviser();
+        this.listOfGrade();
         this.userExtract(window.Laravel.user.id);
         
     }
