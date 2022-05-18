@@ -12,6 +12,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherAdvisoryController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\AnnouncementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,5 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('grade', GradeController::class);
     Route::get('schedule/ind/{id}', [ScheduleController::class,'getSchedule']);
     Route::resource('schedule', ScheduleController::class);
+    Route::resource('announce', AnnouncementController::class);
 
 });

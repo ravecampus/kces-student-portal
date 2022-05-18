@@ -19940,8 +19940,67 @@ __webpack_require__.r(__webpack_exports__);
     return {
       post: {},
       errors: [],
-      btn_cap: 'Save'
+      btn_cap: 'Post',
+      announces: [],
+      tableData: {
+        search: ""
+      }
     };
+  },
+  methods: {
+    saveAnnounce: function saveAnnounce() {
+      var _this = this;
+
+      this.$axios.get('sanction/csrf-cookie').then(function (response) {
+        _this.btn_cap = "Posting...";
+
+        if (_this.post.id > 0) {
+          _this.$axios.put('api/announce/' + _this.post.id, _this.post).then(function (res) {
+            _this.btn_cap = "Post";
+            _this.post = {};
+
+            _this.listAnnounce();
+          })["catch"](function (err) {
+            _this.btn_cap = "Post";
+            _this.error = '';
+            _this.errors = err.response.data.errors;
+          });
+        } else {
+          _this.$axios.post('api/announce', _this.post).then(function (res) {
+            _this.btn_cap = "Post";
+            _this.post = {};
+
+            _this.listAnnounce();
+          })["catch"](function (err) {
+            _this.error = '';
+            _this.btn_cap = "Post";
+            _this.errors = err.response.data.errors;
+          });
+        }
+      });
+    },
+    listAnnounce: function listAnnounce() {
+      var _this2 = this;
+
+      var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'api/announce';
+      this.$axios.get('sanctum/csrf-cookie').then(function (response) {
+        _this2.$axios.get(url, {
+          params: _this2.tableData
+        }).then(function (res) {
+          _this2.announces = res.data;
+          console.log(res.data);
+        })["catch"](function (err) {});
+      });
+    },
+    editAnnounce: function editAnnounce(data) {
+      this.post = data;
+    },
+    clear: function clear() {
+      this.post = {};
+    }
+  },
+  mounted: function mounted() {
+    this.listAnnounce();
   }
 });
 
@@ -22828,7 +22887,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     extractDay: function extractDay(day) {
       var ret = "";
-      console.log(this.days, day);
       $.each(this.days, function (key, value) {
         if (value.val == day) {
           ret = value.lbl;
@@ -23873,7 +23931,7 @@ var _hoisted_3 = {
   "class": "row border-top mt-1"
 };
 var _hoisted_4 = {
-  "class": "col-md-6 mt-3 border-right"
+  "class": "col-md-7 mt-3 border-right"
 };
 var _hoisted_5 = {
   "class": "row"
@@ -23906,7 +23964,7 @@ var _hoisted_12 = {
   "class": "form-group"
 };
 
-var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Deacription", -1
+var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("label", null, "Description", -1
 /* HOISTED */
 );
 
@@ -23920,10 +23978,39 @@ var _hoisted_15 = {
 var _hoisted_16 = {
   "class": "btn-group col-md-12 mt-3"
 };
+var _hoisted_17 = {
+  "class": "col-md-5"
+};
+var _hoisted_18 = {
+  "class": "mb-3 mt-3"
+};
+var _hoisted_19 = {
+  "class": "table-responsive"
+};
+var _hoisted_20 = {
+  "class": "table"
+};
+var _hoisted_21 = {
+  "class": "card"
+};
+var _hoisted_22 = {
+  "class": "card-body"
+};
+var _hoisted_23 = {
+  "class": "border-bottom"
+};
+var _hoisted_24 = {
+  "class": "text-muted"
+};
+var _hoisted_25 = {
+  "class": "btn-group"
+};
+var _hoisted_26 = ["onClick"];
 
-var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
-  "class": "col-md-6"
-}, null, -1
+var _hoisted_27 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+  type: "button",
+  "class": "btn btn-danger btn-sm"
+}, "remove", -1
 /* HOISTED */
 );
 
@@ -23962,12 +24049,50 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     onClick: _cache[3] || (_cache[3] = function ($event) {
-      return _ctx.saveAnnounce();
+      return $options.saveAnnounce();
     }),
     "class": "btn btn-primary"
   }, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.btn_cap), 1
   /* TEXT */
-  )])])]), _hoisted_17])]);
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+    type: "button",
+    onClick: _cache[4] || (_cache[4] = function ($event) {
+      return $options.clear();
+    }),
+    "class": "btn btn-default"
+  }, "Clear")])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
+    type: "text",
+    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+      return $data.tableData.search = $event;
+    }),
+    placeholder: "Search ...",
+    onInput: _cache[6] || (_cache[6] = function ($event) {
+      return $options.listAnnounce();
+    }),
+    "class": "form-control"
+  }, null, 544
+  /* HYDRATE_EVENTS, NEED_PATCH */
+  ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.tableData.search]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(true), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.renderList)($data.announces, function (list, index) {
+    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("tr", {
+      key: index
+    }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_22, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.title), 1
+    /* TEXT */
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("i", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.description), 1
+    /* TEXT */
+    )]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("small", _hoisted_24, "until on: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(list.expiry_date), 1
+    /* TEXT */
+    )])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+      type: "button",
+      onClick: function onClick($event) {
+        return $options.editAnnounce(list);
+      },
+      "class": "btn btn-warning btn-sm"
+    }, "edit", 8
+    /* PROPS */
+    , _hoisted_26), _hoisted_27])])]);
+  }), 128
+  /* KEYED_FRAGMENT */
+  ))])])])])])]);
 }
 
 /***/ }),

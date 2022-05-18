@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use App\Models\Announcemet;
+use App\Models\Announcement;
 
 class AnnouncementController extends Controller
 {
@@ -13,9 +13,20 @@ class AnnouncementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $searchValue = $request->search;
+        $query = Announcement::where('deleted', 0)
+        ->whereDate('expiry_date','>=',Carbon::now()->toDateString());
+    
+        if($searchValue){
+            $query->where(function($query) use ($searchValue){
+                $query->where('title', 'like', '%'.$searchValue.'%')
+                ->orWhere('description', 'like', '%'.$searchValue.'%');
+            });
+        }
+       
+        return response()->json($query->get(), 200);
     }
 
     /**
@@ -36,9 +47,21 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-        $ann = Announcement::create([
 
+        $request->validate([
+            'title'=>'required|string',
+            'description'=>'required|string',
+            'expiry_date'=>'required|date|after_or_equal:'.Carbon::now()->format('Y-m-d'),
+            
         ]);
+
+        $ann = Announcement::create([
+            'title'=>$request->title,
+            'description'=>$request->description,
+            'expiry_date'=>Carbon::parse($request->expiry_date)->format('Y-m-d'),
+        ]);
+
+        return response()->json($ann,200);
     }
 
     /**
@@ -60,7 +83,7 @@ class AnnouncementController extends Controller
      */
     public function edit($id)
     {
-        //
+    
     }
 
     /**
@@ -72,7 +95,19 @@ class AnnouncementController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'title'=>'required|string',
+            'description'=>'required|string',
+            'expiry_date'=>'required|date|after_or_equal:'.Carbon::now()->format('Y-m-d'),
+        ]);
+
+        $ann = Announcement::find($id);
+        $ann->title = $request->title;
+        $ann->description = $request->description;
+        $ann->expiry_date = Carbon::parse($request->expiry_date)->format('Y-m-d');
+        $ann->save();
+
+        return response()->json($ann,200);
     }
 
     /**

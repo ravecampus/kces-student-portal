@@ -19,12 +19,7 @@ class ScheduleController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->search;
-
-        $length = $request->length;
-        $column = $request->column;
-        $dir = $request->dir;
-        $archive = $request->archive;
+        
         $searchValue = $request->search;
         $query = Schedule::join('subjects', 'subjects.id','=', 'schedules.subject_id')
         ->select(['schedules.*','subjects.subject_name']);

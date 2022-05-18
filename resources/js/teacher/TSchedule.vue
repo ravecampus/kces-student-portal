@@ -188,7 +188,6 @@ export default {
         },
         extractDay(day){
             let ret = "";
-            console.log(this.days,day)
             $.each(this.days, (key, value)=>{
                 if(value.val == day){
                     ret = value.lbl;
