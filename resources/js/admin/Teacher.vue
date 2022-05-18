@@ -372,6 +372,7 @@ export default {
         },
         showCredential(data){
             if(data.account != null){
+                this.post = data;
                 this.post['username'] = data.account.username;
                 this.post['email'] = data.account.email;
             }else{

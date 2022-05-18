@@ -29,10 +29,10 @@
                 </li>
               </ul>
 	          </li>
-	          <!-- <li>
-              <a href="#">Portfolio</a>
-	          </li>
 	          <li>
+              <router-link  :to="{name:'adminannounce'}">Announcement</router-link>
+	          </li>
+	          <!-- <li>
               <a href="#">Contact</a>
 	          </li> -->
 	        </ul>

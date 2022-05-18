@@ -1,7 +1,7 @@
 <template>
-    <div class="d-flex flex-column align-items-center row mt-3" v-if="!auth">
+    <div class="d-flex flex-column align-items-center mt-5" v-if="!auth">
         <div class="col-md-4">
-            <div class="card mb-5 mt-3">
+            <div class="card mt-3">
                 <div class="card-body">
                     <div class="d-flex flex-column align-items-center border-bottom p-3 mb-3">
                         <img class="img-responsive logo-kces" src="img/kces.png"/>

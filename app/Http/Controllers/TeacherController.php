@@ -160,7 +160,6 @@ class TeacherController extends Controller
     }
 
     public function credential(Request $request){
-
         if(isset($request->account['id'])){
             $request->validate([
                 'email' => 'required',

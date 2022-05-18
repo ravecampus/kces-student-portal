@@ -1,5 +1,10 @@
- <div class="list-group">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start active">
+<template>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h5>Announcement</h5>
+                <div class="list-group mt-2">
+                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">List group item heading</h5>
                         <small>3 days ago</small>
@@ -24,3 +29,17 @@
                         <small class="text-muted">Donec id elit non mi porta.</small>
                     </a>
                 </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+export default{
+    data(){
+        return{
+
+        }
+    }
+}
+
+</script>

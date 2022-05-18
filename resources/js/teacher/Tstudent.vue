@@ -40,7 +40,7 @@
                                 <td><strong>{{ list.lrn }}</strong></td>
                                 <td><strong>{{ list.last_name }}</strong>, {{list.first_name}} {{list.middle_name}}</td>
                                 <td>{{ extractSex(list.sex) }}</td>
-                                <td>{{list.account == null ? 'No' : 'Yes'}}</td>
+                                <td>{{list.account ==null? 'No' : 'Yes' }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
                                         <button type="button" @click="showCredential(list)" class="btn btn-success btn-sm">credential</button>
@@ -415,6 +415,7 @@ export default {
         },
         showCredential(data){
             if(data.account != null){
+                this.post = data;
                 this.post['username'] = data.account.username;
                 this.post['email'] = data.account.email;
             }else{
@@ -459,10 +460,7 @@ export default {
         
     },
     mounted(){
-     
-        // this.studentwithAdviser();
         this.userExtract(window.Laravel.user.id);
-        
     }
 
 }

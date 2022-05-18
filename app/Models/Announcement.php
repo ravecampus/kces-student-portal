@@ -10,10 +10,11 @@ class Announcement extends Model
     use HasFactory;
     protected $table = 'announcements';
     protected $fillable = [
-        'announcements',
+        'title',
         'description',
         'announce_date',
         'teacher_id',
+        'expiry_date',
         'deleted'
     ];
 }

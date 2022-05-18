@@ -10,6 +10,9 @@ import AdminSubject from '../admin/Subject';
 import Section from '../admin/Section';
 import SchoolYear from '../admin/SchoolYear';
 import AdminProfile from '../admin/AdminProfile';
+import AdminAnnounce from '../admin/Announcement';
+
+
 import TStudent from '../teacher/Tstudent';
 import Teacher from '../teacher/BaseTeacher';
 import SearchStudentInfo from '../teacher/SearchStudentInfo';
@@ -17,6 +20,7 @@ import TProfile from '../teacher/TProfile';
 import TGrade from '../teacher/TGrade';
 import TGradeDownload from '../teacher/TGradeDownload';
 import TSchedule from '../teacher/TSchedule';
+import TAnnounce from '../teacher/TAnnouncement';
 
 import Student from '../student/BaseStudent';
 import SAnnouncement from '../student/SAnnouncement';
@@ -70,6 +74,11 @@ export const routes = [
                 name:'adminprofile',
                 path:'/admin/profile',
                 component: AdminProfile,
+            },
+            {
+                name:'adminannounce',
+                path:'/admin/announcement',
+                component: AdminAnnounce,
             },
         ]
     },
@@ -134,6 +143,11 @@ export const routes = [
                 name:'tschedule',
                 path:'/teacher/schedule/',
                 component: TSchedule
+            },
+            {
+                name:'tannounce',
+                path:'/teacher/announcement/',
+                component: TAnnounce
             },
         ]
     },

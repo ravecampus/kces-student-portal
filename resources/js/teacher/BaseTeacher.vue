@@ -53,7 +53,7 @@
                     <a class="nav-link" href="#">Home</a>
                 </li> -->
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Announcement</a>
+                    <router-link class="nav-link" :to="{name:'tannounce'}">Announcement</router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" :to="{name:'tprofile'}">Profile</router-link>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\Announcemet;
 
 class AnnouncementController extends Controller
 {
@@ -34,7 +36,9 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $ann = Announcement::create([
+
+        ]);
     }
 
     /**
