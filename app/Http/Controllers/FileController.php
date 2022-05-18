@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Carbon\Carbon;
-use App\Models\Announcement;
+use App\Models\File;
 
-class AnnouncementController extends Controller
+class FileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,13 +15,11 @@ class AnnouncementController extends Controller
     public function index(Request $request)
     {
         $searchValue = $request->search;
-        $query = Announcement::where('deleted', 0)
-        ->whereDate('expiry_date','>=',Carbon::now()->toDateString());
+        $query = File::orderBy('created_at', 'desc');
     
         if($searchValue){
             $query->where(function($query) use ($searchValue){
-                $query->where('title', 'like', '%'.$searchValue.'%')
-                ->orWhere('description', 'like', '%'.$searchValue.'%');
+                $query->where('title', 'like', '%'.$searchValue.'%');
             });
         }
        
@@ -36,7 +33,7 @@ class AnnouncementController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -47,21 +44,15 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-
         $request->validate([
-            'title'=>'required|string',
-            'description'=>'required|string',
-            'expiry_date'=>'required|date|after_or_equal:'.Carbon::now()->format('Y-m-d'),
-            
+            'title' => 'required|string',
+            'link' => 'required|url',
         ]);
-
-        $ann = Announcement::create([
+        $file = File::create([
             'title'=>$request->title,
-            'description'=>$request->description,
-            'expiry_date'=>Carbon::parse($request->expiry_date)->format('Y-m-d'),
-        ]);
-
-        return response()->json($ann,200);
+            'link'=>$request->link,
+            ]);
+        return response()->json($file, 200);
     }
 
     /**
@@ -83,7 +74,7 @@ class AnnouncementController extends Controller
      */
     public function edit($id)
     {
-    
+        //
     }
 
     /**
@@ -96,18 +87,14 @@ class AnnouncementController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title'=>'required|string',
-            'description'=>'required|string',
-            'expiry_date'=>'required|date|after_or_equal:'.Carbon::now()->format('Y-m-d'),
+            'title' => 'required|string',
+            'link' => 'required|url',
         ]);
-
-        $ann = Announcement::find($id);
-        $ann->title = $request->title;
-        $ann->description = $request->description;
-        $ann->expiry_date = Carbon::parse($request->expiry_date)->format('Y-m-d');
-        $ann->save();
-
-        return response()->json($ann,200);
+        $file = File::find($id);
+        $file->title = $request->title;
+        $file->link = $request->link;
+        $file->save();
+        return response()->json($file, 200);
     }
 
     /**
@@ -118,10 +105,8 @@ class AnnouncementController extends Controller
      */
     public function destroy($id)
     {
-        $ann = Announcement::find($id);
-        $ann->deleted = 1;
-        $ann->save();
-
-        return response()->json($ann, 200);
+        $file = File::find($id);
+        $file->delete();
+        return response()->json($file, 200);
     }
 }

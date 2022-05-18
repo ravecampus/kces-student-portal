@@ -1,32 +1,22 @@
 <template>
     <div class="container">
         <div class="row">
+            <div class="col-md-12 mb-3 border-bottom">
+                 <h5>Announcement</h5>
+            </div>
+           
             <div class="col-md-12">
-                <h5>Announcement</h5>
-                <div class="list-group mt-2">
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="list-group">
+                    <a v-for="(list, index) in announces" :key="index" href="#" class="list-group-item list-group-item-action flex-column align-items-start">
                         <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small>3 days ago</small>
+                        <h5 class="mb-1">{{ list.title }}</h5>
+                        <small>
+                            <timeago :datetime="list.created_at"/>
+                        </small>
+                       
                         </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small>Donec id elit non mi porta.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
-                    </a>
-                    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">List group item heading</h5>
-                        <small class="text-muted">3 days ago</small>
-                        </div>
-                        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-                        <small class="text-muted">Donec id elit non mi porta.</small>
+                        <p class="mb-1">{{ list.description }}</p>
+                        <small>Until on : {{ list.expiry_date }}</small>
                     </a>
                 </div>
             </div>
@@ -34,11 +24,26 @@
     </div>
 </template>
 <script>
+
 export default{
     data(){
         return{
-
+            announces:[],
         }
+    },
+    methods:{
+        listAnnounce(url='api/announce'){
+            this.$axios.get('sanctum/csrf-cookie').then(response => {
+                this.$axios.get(url,{params:this.tableData}).then(res=>{
+                    this.announces =  res.data
+                }).catch(err=>{
+                
+                });
+            });
+        }
+    },
+    mounted(){
+        this.listAnnounce();
     }
 }
 

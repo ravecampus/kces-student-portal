@@ -3,11 +3,11 @@
       <div class="row">
           <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body" v-if="schedules == null">
+                    <div class="card-body" v-if="schedules.length <= 0">
                         No posted of Schedule
                     </div>
                 </div>
-                <div class="table-responsive" v-if="schedules != null">
+                <div class="table-responsive" v-if="schedules.length > 0">
                     <table class="table table-bordered table-dark">
                         <thead>
                             <tr>

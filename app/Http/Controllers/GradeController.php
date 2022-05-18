@@ -119,5 +119,12 @@ class GradeController extends Controller
         ->first();
         return response()->json($grade, 200);
     }
+
+    public function finalgrade($id){
+        $gs =  GradeStatus::find($id);
+        $gs->status = 1;
+        $gs->save();
+        return response()->json($gs, 200);
+    }
     
 }

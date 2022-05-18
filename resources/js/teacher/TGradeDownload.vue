@@ -249,7 +249,6 @@ export default {
                 this.$axios.get('api/teacher/'+id).then(res=>{
                   this.user = res.data;
                   let data = res.data;
-                  console.log(data);
                   if(data.advise != null){
                         this.advisory_id = data.advise.id;
                         this.post.id = data.advise.id;
@@ -265,7 +264,6 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(response => {
                 this.$axios.post('api/teacher-advisory/ind',this.post).then(res=>{
                     let data = res.data;
-                    console.log(data)
                     this.listOfGrade(data.teacher_advisory_id)
                 }).catch(err=>{
                 

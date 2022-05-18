@@ -51,7 +51,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Announcement</a>
+                     <router-link class="nav-link" :to="{name:'sannouncement'}">Announcement <span class="badge badge-success" v-if="announces.length > 0">{{ announces.length }}</span></router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" :to="{name:'sprofile'}">Profile</router-link>
@@ -75,7 +75,8 @@ export default {
         return{
             user:{},
             sections:[],
-            syears:[]
+            syears:[],
+            announces:[]
         }
     },
     methods:{
@@ -135,12 +136,22 @@ export default {
                }
             });
             return ret;         
+        },
+        listAnnounce(url='api/announce'){
+            this.$axios.get('sanctum/csrf-cookie').then(response => {
+                this.$axios.get(url,{params:this.tableData}).then(res=>{
+                    this.announces =  res.data
+                }).catch(err=>{
+                
+                });
+            });
         }
     },
     mounted(){
         this.listLevelSY();
         this.listLevelSection();
         this.userExtract(window.Laravel.user.id);
+        this.listAnnounce();
     }
 }
 </script>

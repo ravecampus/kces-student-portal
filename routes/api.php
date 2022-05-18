@@ -13,6 +13,7 @@ use App\Http\Controllers\TeacherAdvisoryController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,10 +58,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('student', StudentController::class);
     Route::post('teacher-advisory/ind', [TeacherAdvisoryController::class, 'getStudent']);
     Route::resource('teacher-advisory', TeacherAdvisoryController::class);
+    Route::get('grade/final/{id}', [GradeController::class,'finalgrade']);
     Route::get('grade/student/{id}', [GradeController::class,'studentGrade']);
     Route::resource('grade', GradeController::class);
     Route::get('schedule/ind/{id}', [ScheduleController::class,'getSchedule']);
     Route::resource('schedule', ScheduleController::class);
     Route::resource('announce', AnnouncementController::class);
+    Route::resource('file', FileController::class);
 
 });

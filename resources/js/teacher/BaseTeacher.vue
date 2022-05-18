@@ -53,7 +53,10 @@
                     <a class="nav-link" href="#">Home</a>
                 </li> -->
                 <li class="nav-item">
-                    <router-link class="nav-link" :to="{name:'tannounce'}">Announcement</router-link>
+                    <router-link class="nav-link" :to="{name:'tannounce'}">Announcement <span class="badge badge-success" v-if="announces.length > 0">{{ announces.length }}</span></router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" :to="{name:'tfiles'}">Files <span class="badge badge-warning" v-if="files.length > 0">{{ files.length }}</span></router-link>
                 </li>
                 <li class="nav-item">
                     <router-link class="nav-link" :to="{name:'tprofile'}">Profile</router-link>
@@ -77,7 +80,9 @@ export default {
         return{
             user:{},
             sections:[],
-            syears:[]
+            syears:[],
+            announces:[],
+            files:[]
         }
     },
     methods:{
@@ -90,7 +95,6 @@ export default {
                         } 
                     })
                     .catch(function (error) {
-                        console.error(error);
                     });
             })
         },
@@ -99,7 +103,6 @@ export default {
                 this.$axios.get('api/teacher/'+id).then(res=>{
                   this.user = res.data;
                   window.advisory_id = res.data.advise.id;
-                  console.log("user",res.data)
                 });
             });
         },
@@ -140,6 +143,25 @@ export default {
             });
             return ret;         
         },
+
+        listAnnounce(url='api/announce'){
+            this.$axios.get('sanctum/csrf-cookie').then(response => {
+                this.$axios.get(url,{params:this.tableData}).then(res=>{
+                    this.announces =  res.data
+                }).catch(err=>{
+                
+                });
+            });
+        },
+        listFile(url='api/file'){
+            this.$axios.get('sanctum/csrf-cookie').then(response => {
+                this.$axios.get(url,{params:this.tableData}).then(res=>{
+                    this.files =  res.data
+                }).catch(err=>{
+                
+                });
+            });
+        },
        
 
     },
@@ -147,6 +169,8 @@ export default {
         this.listLevelSY();
         this.listLevelSection();
         this.userExtract(window.Laravel.user.id);
+        this.listAnnounce();
+        this.listFile()
     }
 }
 </script>

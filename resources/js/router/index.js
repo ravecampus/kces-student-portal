@@ -11,6 +11,7 @@ import Section from '../admin/Section';
 import SchoolYear from '../admin/SchoolYear';
 import AdminProfile from '../admin/AdminProfile';
 import AdminAnnounce from '../admin/Announcement';
+import AdminFiles from '../admin/Files';
 
 
 import TStudent from '../teacher/Tstudent';
@@ -21,6 +22,7 @@ import TGrade from '../teacher/TGrade';
 import TGradeDownload from '../teacher/TGradeDownload';
 import TSchedule from '../teacher/TSchedule';
 import TAnnounce from '../teacher/TAnnouncement';
+import TFiles from '../teacher/TFiles';
 
 import Student from '../student/BaseStudent';
 import SAnnouncement from '../student/SAnnouncement';
@@ -79,6 +81,11 @@ export const routes = [
                 name:'adminannounce',
                 path:'/admin/announcement',
                 component: AdminAnnounce,
+            },
+            {
+                name:'adminfiles',
+                path:'/admin/files',
+                component: AdminFiles,
             },
         ]
     },
@@ -148,6 +155,11 @@ export const routes = [
                 name:'tannounce',
                 path:'/teacher/announcement/',
                 component: TAnnounce
+            },
+            {
+                name:'tfiles',
+                path:'/teacher/files/',
+                component: TFiles
             },
         ]
     },

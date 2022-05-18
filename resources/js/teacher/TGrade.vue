@@ -108,7 +108,7 @@
                                         <td>
                                             {{ list.remarks }}
                                         </td>
-                                        <td>
+                                        <td v-if="gradeStatus.status != 1">
                                             <button type="button" @click="showSetup(list)" class="btn btn-warning btn-sm">Set up</button>
                                         </td>
 
@@ -118,6 +118,11 @@
                                            <h5 class="pull-right text-white"> General Average</h5>
                                         </td>
                                         <td>{{ getAverage(gradeStatus.grade)}}</td>
+                                        <td colspan="2">
+                                            <button type="button" @click="finalGrade(gradeStatus)" class="btn btn-primary">
+                                                {{ btn_final }}
+                                            </button>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -222,6 +227,7 @@ export default {
         });
         return{
             btn_cap:"Save",
+            btn_final:"Final Review",
             students:[],
             gradeStatus:{},
             grade:{
@@ -388,7 +394,6 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.get('api/grade/'+this.post.id).then(res=>{
                    this.gradeStatus = res.data;
-                   console.log(res.data);
                 });
             });
         },
@@ -448,7 +453,9 @@ export default {
                    
                 }
             });
-            return ret / count; 
+            
+            let rr = (ret / count);
+            return isNaN(rr) ? 0 : (ret / count); 
         },
         viewSummaryGrade(data){
             this.$router.push({name:'tgradedownload',params:{'student_id':data.student_id}});
@@ -461,6 +468,17 @@ export default {
             // }
 
             // return false;
+        },
+        finalGrade(data){
+             this.btn_final = "Reviewing ...";
+             this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/grade/final/'+data.id).then(res=>{
+                    this.btn_final = "Final Review";
+                    this.listOfGrade();
+                }).catch(err=>{
+
+                });
+            });
         }
     },
     mounted(){

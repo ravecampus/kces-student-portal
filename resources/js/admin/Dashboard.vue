@@ -32,6 +32,9 @@
 	          <li>
               <router-link  :to="{name:'adminannounce'}">Announcement</router-link>
 	          </li>
+              <li>
+                <router-link  :to="{name:'adminfiles'}">Files</router-link>
+	          </li>
 	          <!-- <li>
               <a href="#">Contact</a>
 	          </li> -->

@@ -7,9 +7,8 @@
                     <label>Subject</label>
                     <select v-model="post.subject" class="form-control">
                         <option v-for="(list, index) in subjects" :key="index" :value="list.id" >{{ list.subject_name }}</option>
-                        
-                    <span class="errors-material" v-if="errors.subject">{{errors.subject[0]}}</span>
                     </select>
+                    <span class="errors-material" v-if="errors.subject">{{errors.subject[0]}}</span>
                 </div>
                 <div class="form-group">
                     <label>Day</label>
@@ -17,7 +16,7 @@
                         <option v-for="(list, index) in days" :key="index" :value="list.val">{{ list.lbl }}</option>
                        
                     </select>
-                    <span class="errors-material" v-if="errors.subject">{{errors.subject[0]}}</span>
+                    <span class="errors-material" v-if="errors.day">{{errors.day[0]}}</span>
                 </div>
                 <div class="row mb-3">
                     <div class="form-group col-md-6">

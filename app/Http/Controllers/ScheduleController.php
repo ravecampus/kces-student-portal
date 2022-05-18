@@ -22,7 +22,7 @@ class ScheduleController extends Controller
         
         $searchValue = $request->search;
         $query = Schedule::join('subjects', 'subjects.id','=', 'schedules.subject_id')
-        ->select(['schedules.*','subjects.subject_name']);
+        ->select(['schedules.*','subjects.subject_name'])->orderBy('schedules.sday', 'asc');
     
         if($searchValue){
             $query->where(function($query) use ($searchValue){
