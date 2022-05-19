@@ -44,7 +44,7 @@ export const routes = [
     },
     {
         name: 'admin',
-        path: '/admin/',
+        path: '/admin',
         component: Admin,
         children:[
             {
@@ -133,12 +133,12 @@ export const routes = [
             },
             {
                 name:'tprofile',
-                path:'/teacher/profile/',
+                path:'/teacher/profile',
                 component: TProfile
             },
             {
                 name:'tgrade',
-                path:'/teacher/grade/',
+                path:'/teacher/grade',
                 component: TGrade
             },
             {
@@ -148,23 +148,23 @@ export const routes = [
             },
             {
                 name:'tschedule',
-                path:'/teacher/schedule/',
+                path:'/teacher/schedule',
                 component: TSchedule
             },
             {
                 name:'tannounce',
-                path:'/teacher/announcement/',
+                path:'/teacher/announcement',
                 component: TAnnounce
             },
             {
                 name:'tfiles',
-                path:'/teacher/files/',
+                path:'/teacher/files',
                 component: TFiles
             },
         ]
     },
     {
-        path: '/:pathMatch(.*)*',
+        path: '/:catchAll(.*)',
         name:'/notfound',
         component: Notfound
     },
@@ -182,14 +182,60 @@ const openRoutes = [
     'login',
     'notfound',
 ];
+const adminRoutes = [
+    'admin', 
+    'adminteacher',
+    'advisory',
+    'adminsubject',
+    'section',
+    'schoolyear',
+    'adminprofile',
+    'adminannounce',
+    'adminfiles',
+];
+
+const teacherRoutes = [
+    'tstudent', 
+    'tstudentinfo',
+    'tprofile',
+    'tgrade',
+    'tgradedownload',
+    'tschedule',
+    'tannounce',
+    'tfiles',
+];
+
+const studentRoutes = [
+    'student', 
+    'sannouncement',
+    'sprofile',
+    'sgrade',
+    'sschedule',
+];
+
 
 router.beforeEach((to, from, next)=>{
-    if(openRoutes.includes(to.name) || window.Laravel.isLoggedin){
-        // if(window.Laravel.user.role == 3){
-        //     next();
-        // }
-        next();
+    if(!window.Laravel.isLoggedin){
+        if(openRoutes.includes(to.name)){
+            return next();
+        }
+    }else{
+        let user = window.Laravel.user;
+        if(adminRoutes.includes(to.name) && user.role == 3){
+            return next();
+        }else if(teacherRoutes.includes(to.name) && user.role == 2){
+            return next();
+        }else if(studentRoutes.includes(to.name) && user.role == 1){
+            return next();
+        }
     }
+    if(openRoutes.includes(to.name)){
+        return next();
+    }else{
+        return next({name:'login'});
+    }
+    
+   
 });
 
 export default router;

@@ -2,8 +2,29 @@
     <div class="container">
       <div class="row">
           <div class="col-md-12">
+                <div class="d-flex justify-content-center ">
+                    <div></div>
+                    <div class="text-center mb-5 d-none d-print-block">
+                        <p class="p-0 m-0"><small>Republic of the Philippines</small></p>
+                        <p class="p-0 m-0"><strong>DEPARTMENT OF EDUCATION</strong></p>
+                        <p class="p-0 m-0"><small>Region XII</small></p>
+                        <p class="p-0 m-0"><small>Schools Division Office of Cotabato</small></p>
+                        <p class="p-0 m-0"><small>Kabacan North District</small></p>
+                        <p class="p-0 m-0"><strong>KATIDTUAN CENTER ELEMENTARY SCHOOL</strong></p>
+                        <p class="p-0 m-0"><strong>LEARNER'S PROGRESS REPORT CARD</strong></p>
+                        <p class="p-0 m-0 d-print-none"><small>Year 2021-2022</small></p>
+                    </div>
+                    <div></div>
+                </div>
+                <div class="co-md-12">
+                     <ul class="list-inline">
+                        <li class="list-inline-item">Name</li>
+                        <li class="list-inline-item">Age</li>
+                        <li class="list-inline-item">Year</li>
+                    </ul>
+                </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-dark">
+                    <table class="table table-bordered table-dark table-sm">
                         <thead>
                             <tr>
                                 <th rowspan="2" class="text-center align-middle">Learning Areas</th>
