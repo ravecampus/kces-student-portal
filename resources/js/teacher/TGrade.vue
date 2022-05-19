@@ -13,7 +13,7 @@
                             <div class="col-md-7 mb-2 pl-0">
                                 <input type="text" class="form-control" v-model="tableData.search"  placeholder="Search ..." @keyup.enter="listOfStudentA()">
                             </div>
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                 <div class="col-md-12 pull-right">
                                     <select class="form-control" aria-placeholder="sort" v-model="tableData.archive" @change="listOfStudentA()">
                                         <option value="0">Active</option>
@@ -21,7 +21,7 @@
                 
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-2">
                                 <div class="col-md-12 pull-right">
                                     <select class="form-control" aria-placeholder="sort" v-model="tableData.length" @change="listOfStudentA()">
@@ -43,8 +43,8 @@
                                 <td>{{ extractSex(list.sex) }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
-                                        <button type="button" @click="viewSummaryGrade(list)" class="btn btn-warning btn-sm">view</button>
-                                        <button type="button" @click="showGrade(list)" class="btn btn-success btn-sm">edit</button>
+                                        <button type="button" @click="viewSummaryGrade(list)" class="btn btn-warning btn-sm">View</button>
+                                        <button type="button" @click="showGrade(list)" class="btn btn-success btn-sm">Edit</button>
                                         <!-- <button type="button" @click="editInfo(list)" class="btn btn-warning btn-sm">Edit Info</button> -->
                                     </div>
                                 </td>

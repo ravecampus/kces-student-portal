@@ -2,17 +2,25 @@
     <div class="container">
         <button type="button" @click="addToClass()" class="btn btn-primary">
             <span class="fa fa-plus"></span>
-            Add to your Class</button>
+            Add to your Class
+            
+        </button>
+        <button type="button" v-if="students.length > 0" @click="classList()" class="btn btn-success ml-1">
+            <span class="fa fa-print"></span>
+          Print Class List
+            
+        </button>
         <div class="row border-top border-bottom mt-2">
             <div class="col-md-12">
+                <h5 class="mt-2">MY CLASS</h5>
                  <div class="card-body">
-                    <div class="col-md-12 mt-2">
+                    <div class="col-md-12">
                         <div class="row search-head">
 
                             <div class="col-md-7 mb-2 pl-0">
                                 <input type="text" class="form-control" v-model="tableData.search"  placeholder="Search ..." @keyup.enter="listOfStudentA()">
                             </div>
-                            <div class="col-md-3">
+                            <!-- <div class="col-md-3">
                                 <div class="col-md-12 pull-right">
                                     <select class="form-control" aria-placeholder="sort" v-model="tableData.archive" @change="listOfStudentA()">
                                         <option value="0">Active</option>
@@ -20,7 +28,7 @@
                 
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="col-md-2">
                                 <div class="col-md-12 pull-right">
                                     <select class="form-control" aria-placeholder="sort" v-model="tableData.length" @change="listOfStudentA()">
@@ -43,8 +51,9 @@
                                 <td>{{list.account ==null? 'No' : 'Yes' }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
-                                        <button type="button" @click="showCredential(list)" class="btn btn-success btn-sm">credential</button>
+                                        <button type="button" @click="showCredential(list)" class="btn btn-success btn-sm">Credential</button>
                                         <button type="button" @click="editInfo(list)" class="btn btn-warning btn-sm">Edit Info</button>
+                                        <button type="button" @click="removeClass(list)" class="btn btn-danger btn-sm">Remove</button>
                                     </div>
                                 </td>
                             </tr>
@@ -227,6 +236,30 @@
                     </div>
                 </div>
             </div>
+
+             <div class="modal fade remove-class">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <!-- <div class="modal-header">
+                            <h4>ORGANIZATION CATEGORY</h4>
+                        </div> -->
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    Do you want to remove <strong>{{ post.lrn }} </strong>?
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <div class="btn-group">
+                                <button type="button"  @click="deleteClass(post)"  class="btn btn-danger btn-sm">Yes</button>
+                                <button type="button" data-dismiss="modal"  class="btn btn-default btn-sm">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </template>
 
@@ -303,6 +336,10 @@ export default {
         }
     },
     methods:{
+        removeClass(data){
+            this.post = data;
+            $('.remove-class').modal('show');
+        },
         addToClass(){
             this.$router.push({name:'tstudentinfo', params:{'advisory_id':this.advisory_id}});
         },
@@ -457,6 +494,18 @@ export default {
                 });
             });
         },
+        deleteClass(){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.post('api/teacher-advisory/klass', this.post).then(res=>{
+                    this.post = {};
+                    this.listOfStudentA();
+                     $('.remove-class').modal('hide');
+                });
+            });
+        },
+        classList(){
+            this.$router.push({name:'tclasslist', params:{'id': this.advisory_id}});
+        }
         
     },
     mounted(){

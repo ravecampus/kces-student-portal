@@ -2,28 +2,64 @@
     <div class="container">
       <div class="row">
           <div class="col-md-12">
-                <div class="d-flex justify-content-center ">
+                <div class="d-flex justify-content-center">
                     <div></div>
                     <div class="text-center mb-5 d-none d-print-block">
-                        <p class="p-0 m-0"><small>Republic of the Philippines</small></p>
+                        <p class="p-0 m-0 fsize">Republic of the Philippines</p>
                         <p class="p-0 m-0"><strong>DEPARTMENT OF EDUCATION</strong></p>
-                        <p class="p-0 m-0"><small>Region XII</small></p>
-                        <p class="p-0 m-0"><small>Schools Division Office of Cotabato</small></p>
-                        <p class="p-0 m-0"><small>Kabacan North District</small></p>
+                        <p class="p-0 m-0 fsize">Region XII</p>
+                        <p class="p-0 m-0 fsize">Schools Division Office of Cotabato</p>
+                        <p class="p-0 m-0 fsize">Kabacan North District</p>
                         <p class="p-0 m-0"><strong>KATIDTUAN CENTER ELEMENTARY SCHOOL</strong></p>
                         <p class="p-0 m-0"><strong>LEARNER'S PROGRESS REPORT CARD</strong></p>
-                        <p class="p-0 m-0 d-print-none"><small>Year 2021-2022</small></p>
+                        <p class="p-0 m-0 fsize">{{ syDisplay }}</p>
                     </div>
                     <div></div>
                 </div>
                 <div class="co-md-12">
-                     <ul class="list-inline">
-                        <li class="list-inline-item">Name</li>
-                        <li class="list-inline-item">Age</li>
-                        <li class="list-inline-item">Year</li>
+                     <ul class="list-inline m-0 p-0 pl-3">
+                        <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>Name:</strong> {{ student.last_name }}, {{ student.first_name }} {{ student.middle_name }} {{ student.suffix }}.</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>Age:</strong> {{ student.age }}</label>
+                            </div> 
+                        </li>
+                         <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>Sex:</strong> {{ extractSex(student.sex) }}</label>
+                            </div> 
+                        </li>
+                    </ul>
+                    <ul class="list-inline m-0 p-0 pl-3 d-none d-print-block">
+                        <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>Grade:</strong> {{ gradeDisplay }}</label>
+                            </div>
+                        </li>
+                        <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>Section:</strong> {{ sectionDisplay }}</label>
+                            </div> 
+                        </li>
+                         <li class="list-inline-item w-5">
+                            <div class="w-5 mr-4">
+                                <label><strong>LRN:</strong> {{student.lrn}}</label>
+                            </div> 
+                        </li>
                     </ul>
                 </div>
-                <div class="table-responsive">
+                <div class="col-md-12 d-print-none">
+                    <div class="btn-group pull-right mb-1">
+                        <button type="button" v-if="gradeStatus.grade != null" @click="PrintWeb()" class="btn btn-success btn-sm">
+                            <span class="fa fa-print"></span>
+                        </button>
+                    </div>
+                </div>
+                <div class="table-responsive mt-2">
                     <table class="table table-bordered table-dark table-sm">
                         <thead>
                             <tr>
@@ -68,13 +104,16 @@
                             </tr>
                             <tr>
                                 <td colspan="5">
-                                    <h5 class="pull-right text-white"> General Average</h5>
+                                    <strong class="pull-right"> General Average</strong>
                                 </td>
                                 <td>{{ getAverage(gradeStatus.grade)}}</td>
                                 <td></td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+                <div class="col-md-12 d-none d-print-block">
+                    Print date: {{ format(new Date()) }}
                 </div>
           </div>
       </div>
@@ -124,7 +163,11 @@ export default {
         return{
             btn_cap:"Save",
             students:[],
+            student:{},
             gradeStatus:{},
+            sectionDisplay:null,
+            gradeDisplay:null,
+            syDisplay:null,
             grade:{
                 // first:[],
                 // second:[],
@@ -271,6 +314,8 @@ export default {
                   this.user = res.data;
                   let data = res.data;
                   if(data.advise != null){
+                        this.levelSection(data.advise);
+                        this.levelSY(data.advise);
                         this.advisory_id = data.advise.id;
                         this.post.id = data.advise.id;
                         this.post.student_id = this.$route.params.student_id;
@@ -285,6 +330,7 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(response => {
                 this.$axios.post('api/teacher-advisory/ind',this.post).then(res=>{
                     let data = res.data;
+                    this.student = data;
                     this.listOfGrade(data.teacher_advisory_id)
                 }).catch(err=>{
                 
@@ -356,13 +402,54 @@ export default {
             });
             let rr = (ret / count);
             return isNaN(rr) ? 0 : (ret / count); 
-        }
+        },
+        listLevelSection(){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/section/list').then(res=>{
+                    this.sections = res.data;
+                });
+            });
+        },
+        PrintWeb(){
+            const print = window;
+            print.focus();
+            print.print();
+            // print.close();
+        },
+        levelSection(data){
+            let ret = "";
+            $.each(this.sections, function(key, value) {
+               if(value.id == data.section_id){
+                   ret = value;
+               }
+            });
+           this.sectionDisplay  = ret.section_name;   
+           this.gradeDisplay  = ret.level_of;   
+        },
+
+        listLevelSY(){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/syear/list').then(res=>{
+                    this.syears = res.data;
+                });
+            });
+        },
+        levelSY(data){
+            let ret = "";
+            $.each(this.syears, function(key, value) {
+               if(value.id == data.school_year_id){
+                   ret ="S.Y. "+ value.sy_name +" - "+(parseInt(value.sy_name) + 1);
+               }
+            });
+            this.syDisplay = ret;         
+        },
 
         
     },
     mounted(){
         this.subjectData();
-      
+        this.listLevelSection();
+        this.listLevelSY();
         // this.studentwithAdviser();
         this.userExtract(window.Laravel.user.id);
         
@@ -372,5 +459,7 @@ export default {
 </script>
 
 <style>
-
+    .fsize{
+        font-size: 11px;
+    }
 </style>

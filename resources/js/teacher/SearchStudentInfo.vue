@@ -67,7 +67,7 @@
             <div class="col-md-4">
                 <div class="card mt-2" v-if="listasClass.length > 0">
                     <div class="card card-body">
-                        <h5>Set as My students</h5>
+                        <h5>My students</h5>
                         <table class="table table-sm">
                             <tbody>
                                 <tr v-for="(list, index) in listasClass" :key="index">

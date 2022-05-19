@@ -23,6 +23,7 @@ import TGradeDownload from '../teacher/TGradeDownload';
 import TSchedule from '../teacher/TSchedule';
 import TAnnounce from '../teacher/TAnnouncement';
 import TFiles from '../teacher/TFiles';
+import TClassi from '../teacher/TClassi';
 
 import Student from '../student/BaseStudent';
 import SAnnouncement from '../student/SAnnouncement';
@@ -161,6 +162,12 @@ export const routes = [
                 path:'/teacher/files',
                 component: TFiles
             },
+            {
+                name:'tclasslist',
+                path:'/teacher/class/:id',
+                component: TClassi
+            },
+            
         ]
     },
     {
@@ -203,6 +210,7 @@ const teacherRoutes = [
     'tschedule',
     'tannounce',
     'tfiles',
+    'tclasslist',
 ];
 
 const studentRoutes = [

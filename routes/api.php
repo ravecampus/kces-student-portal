@@ -56,6 +56,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('student/credential',[StudentController::class,'credential']);
     Route::post('student/password', [StudentController::class,'passwordChange']);
     Route::resource('student', StudentController::class);
+    Route::get('tadvisory/{id}', [TeacherAdvisoryController::class, 'getStudentAdvise']);
+    Route::post('teacher-advisory/klass', [TeacherAdvisoryController::class, 'removeKlass']);
     Route::post('teacher-advisory/ind', [TeacherAdvisoryController::class, 'getStudent']);
     Route::resource('teacher-advisory', TeacherAdvisoryController::class);
     Route::get('grade/final/{id}', [GradeController::class,'finalgrade']);

@@ -130,4 +130,19 @@ class TeacherAdvisoryController extends Controller
             )->find($request->student_id);
         return response()->json($student, 200);
     }
+
+    public function removeKlass(Request $request){
+        $dta =  TeacherAdvisory::find($request->id);
+        $dta->delete();
+        return response()->json($dta,200);
+    }
+
+    public function getStudentAdvise($id){
+        $stud = Student::with('account')
+        ->join('teacher_advisory','teacher_advisory.student_id','=',"students.id")
+        ->where('deleted', 0)
+        ->where('teacher_advisory.advisory_id',$id)->orderBy('students.last_name', 'asc')->get();
+
+        return response()->json($stud, 200);
+    }
 }
