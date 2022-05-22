@@ -15,6 +15,7 @@ class CreateGradeStatusTable extends Migration
     {
         Schema::create('grade_status', function (Blueprint $table) {
             $table->id();
+            $table->integer('student_id')->nullable();
             $table->integer('advisory_id')->nullable();
             $table->integer('status')->nullable();
             $table->timestamps();

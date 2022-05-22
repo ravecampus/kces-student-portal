@@ -30,7 +30,7 @@ class Teacher extends Model
     }
 
     public function advise(){
-        return $this->hasOne(Advisory::class, 'teacher_id', 'id');
+        return $this->hasMany(Advisory::class, 'teacher_id', 'id');
     }
     // public function user(){
     //     return $this->morphOne(Image::class, 'userable');

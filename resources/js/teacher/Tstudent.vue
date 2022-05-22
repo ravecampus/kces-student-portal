@@ -337,7 +337,6 @@ export default {
     },
     methods:{
         removeClass(data){
-            console.log(data);
             this.post = data;
             $('.remove-class').modal('show');
         },
@@ -480,9 +479,8 @@ export default {
                   this.user = res.data;
                   let data = res.data;
                   if(data.advise != null){
-                      console.log(data);
-                        this.advisory_id = data.advise.id;
-                        this.tableData.advisory_id = data.advise.id;
+                        this.advisory_id = data.advisory_id;
+                        this.tableData.advisory_id = data.advisory_id;
                         this.listOfStudentA();
                   }
                 //   this.userAdvise(res.data.id)

@@ -7,7 +7,7 @@
                 <strong class="align-center ">{{ user.first_name }} {{ user.last_name }} </strong>
             </div>
             <div class="d-flex justify-content-center mb-4">
-                ({{ extractAdvisory(user.advise) }} )
+                ({{ extractAdvisory(user) }} )
             </div>
             <ul class="list-unstyled components mb-5">
 	          <li class="active">
@@ -102,7 +102,7 @@ export default {
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.get('api/teacher/'+id).then(res=>{
                   this.user = res.data;
-                  window.advisory_id = res.data.advise.id;
+                  window.advisory_id = res.data.advisory_id;
                 });
             });
         },
@@ -121,9 +121,19 @@ export default {
             });
         },
         extractAdvisory(data){
+            let adv = this.findActiveAdvisory(data);
             if(data != null){
-                return this.levelSection(data) + ", "+this.levelSY(data);
+                return this.levelSection(adv) + ", "+this.levelSY(adv);
             }
+        },
+        findActiveAdvisory(data){
+            let ret = {};
+             $.each(data.advise, function(key, value) {
+               if(value.id == data.advisory_id){
+                  ret = value;
+               }
+            });
+            return ret;
         },
         levelSection(data){
             let ret = "";

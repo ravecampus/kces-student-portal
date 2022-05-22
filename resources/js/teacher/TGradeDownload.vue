@@ -314,10 +314,11 @@ export default {
                   this.user = res.data;
                   let data = res.data;
                   if(data.advise != null){
-                        this.levelSection(data.advise);
-                        this.levelSY(data.advise);
-                        this.advisory_id = data.advise.id;
-                        this.post.id = data.advise.id;
+                        let adv = this.findActiveAdvisory(data);
+                        this.levelSection(adv);
+                        this.levelSY(adv);
+                        this.advisory_id = data.advisory_id;
+                        this.post.id = data.advisory_id;
                         this.post.student_id = this.$route.params.student_id;
                         // this.tableData.advisory_id = data.advise.id;
                         this.getStudent();
@@ -326,12 +327,22 @@ export default {
                 });
             });
         },
+        findActiveAdvisory(data){
+            let ret = {};
+             $.each(data.advise, function(key, value) {
+               if(value.id == data.advisory_id){
+                  ret = value;
+               }
+            });
+            return ret;
+        },
         getStudent(){
             this.$axios.get('sanctum/csrf-cookie').then(response => {
                 this.$axios.post('api/teacher-advisory/ind',this.post).then(res=>{
+                    console.log(res.data);
                     let data = res.data;
                     this.student = data;
-                    this.listOfGrade(data.teacher_advisory_id)
+                    this.listOfGrade(data.advisory_id)
                 }).catch(err=>{
                 
                 });

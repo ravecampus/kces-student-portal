@@ -41,7 +41,9 @@ class GradeController extends Controller
      */
     public function store(Request $request)
     {
+     
         $id = $request->advisory_id;
+        $stud_id = $request->id;
 
         $chk = GradeStatus::where('advisory_id', $id)->first();
         $auth = Auth::id();
@@ -56,9 +58,9 @@ class GradeController extends Controller
         }else{
             if(!$chk){
                 $gs = GradeStatus::create([
-                    'advisory_id'=>$id
+                    'advisory_id'=>$id,
+                    'student_id'=>$stud_id
                 ]);
-
             
                 foreach ($sub as $key => $value) {
                 $g = Grade::where('subject_id', $value->id)->where('grade_status_id', $gs->id)->first();
@@ -130,11 +132,20 @@ class GradeController extends Controller
     }
 
     public function studentGrade($id){
-        $stud = Student::find($id);
-        $grade = GradeStatus::with('grade')->join('advisory', 'advisory.id','=','grade_status.advisory_id')
-        ->where('grade_status.advisory_id',$stud->advisory_id)
-        ->select(['grade_status.*', 'advisory.teacher_id','advisory.school_year_id', 'advisory.section_id'])
-        ->first();
+        
+        if($id){
+            $grade = GradeStatus::with('grade')->join('advisory', 'advisory.id','=','grade_status.advisory_id')
+            ->where('grade_status.id',$id)
+            ->select(['grade_status.*', 'advisory.teacher_id','advisory.school_year_id', 'advisory.section_id'])
+            ->first();
+        }else{
+            $stud = Student::where('user_id',Auth::id())->first();
+            $grade = GradeStatus::with('grade')->join('advisory', 'advisory.id','=','grade_status.advisory_id')
+            ->where('grade_status.advisory_id',$stud->advisory_id)
+            ->select(['grade_status.*', 'advisory.teacher_id','advisory.school_year_id', 'advisory.section_id'])
+            ->first();
+        }
+       
         return response()->json($grade, 200);
     }
 
@@ -142,6 +153,22 @@ class GradeController extends Controller
         $gs =  GradeStatus::find($id);
         $gs->status = 1;
         $gs->save();
+        return response()->json($gs, 200);
+    }
+
+    public function gradeStatusWithAdvisory(){
+        $auth = Auth::id();
+        $stud = Student::where('user_id', $auth)->first();
+        $gs = GradeStatus::where('student_id', $stud->id)
+            ->join('advisory', 'advisory.id','=','grade_status.advisory_id')
+            ->join('sections','sections.id', '=','advisory.section_id')
+            ->join('school_years', 'school_years.id','=', 'advisory.school_year_id')
+            ->select([
+                'grade_status.*',
+                'sections.section_name',
+                'sections.level_of',
+                'school_years.sy_name',
+                ])->get();
         return response()->json($gs, 200);
     }
     

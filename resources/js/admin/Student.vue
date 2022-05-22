@@ -41,8 +41,10 @@
                                 <td><strong>{{ list.lrn }}</strong></td>
                                 <td><strong>{{ list.last_name }}</strong>, {{list.first_name}} {{list.middle_name}}</td>
                                 <td>{{ extractSex(list.sex) }}</td>
+                                <td>{{ extractAdv(list.advisory_id) }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
+                                        <button type="button" @click="showSL(list)" class="btn btn-primary btn-sm">L.S.Y</button>
                                         <button type="button" @click="showCredential(list)" class="btn btn-success btn-sm">Credential</button>
                                         <button type="button" @click="showeditStudent(list)" class="btn btn-warning btn-sm">Edit</button>
                                         <!-- <button type="button" @click="setasClass(list)" class="btn btn-success btn-sm">Set as</button> -->
@@ -253,6 +255,39 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade section-year">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Section and Level with S.Y.</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Caption</label>
+                                        <select v-model="post.adviser" class="form-control">
+                                            <option v-for="(list, idx) in advisories" :key="idx" v-bind:value="list.id">
+                                                {{ extractAdvisory(list) }}
+                                            </option>
+                                         
+                                        </select>
+                                        <span class="errors-material" v-if="errors.adviser">{{errors.adviser[0]}}</span>
+                                    </div>   
+                                   
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                                <div class="btn-group">
+                                <button type="button"  @click="updateSection(post)"  class="btn btn-success">Save</button>
+                                <button type="button" data-dismiss="modal"  class="btn btn-default btn-sm">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </div>
 </template>
 
@@ -288,6 +323,7 @@ export default {
             {label:'LRN', name:'lrn'},
             {label:'Name', name:'last_name'},
             {label:'Sex', name:'sex'},
+            {label:'L.S.Y', name:null},
             {label:'', name:null},
             ];
         
@@ -304,6 +340,7 @@ export default {
             listasClass:[],
             listStud:[],
             errors:[],
+            advisories:[],
             columns:columns,
             advisory_id:null,
             sortOrders:sortOrders,
@@ -332,6 +369,11 @@ export default {
         openModalStudent(){
             this.post = {};
             $('.student').modal('show');
+        },
+        showSL(data){
+            this.post = data;
+            this.post.adviser = data.advisory_id;
+            $('.section-year').modal('show');
         },
         saveStudent(){
             this.post['advisory_id'] = this.advisory_id;
@@ -492,11 +534,43 @@ export default {
                     this.errors = err.response.data.errors
                 });
             });
+        },
+        listofAdvisory(){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/advisory').then(res=>{
+                   this.advisories = res.data;
+                });
+            });
+        },
+        extractAdvisory(val){
+            return "Grade "+ val.level_of+" "
+               +val.section_name+", "+"S.Y. "+ val.sy_name+" - " +(parseInt(val.sy_name)+ 1);
+        },
+        updateSection(data){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.post('api/student/adviser', data).then(res=>{
+                    this.post = {};
+                    this.listOfStudent();
+                   $('.section-year').modal('hide');
+                }).catch(err=>{
+                    this.errors = err.response.data.errors
+                });
+            });
+        },
+        extractAdv(id){
+            let ret = {};
+            $.each(this.advisories, function(key, value) {
+               if(value.id == id){
+                   ret = value;
+               }
+            });
+            return this.extractAdvisory(ret);
         }
         
     },
     mounted(){
         this.listOfStudent();
+        this.listofAdvisory();
         // this.userExtract(window.Laravel.user.id);
     }
 

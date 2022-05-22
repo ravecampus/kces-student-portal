@@ -137,9 +137,9 @@ class TeacherAdvisoryController extends Controller
         ->where('deleted',0)
         ->where('advisory.id',$request->id)->select(
             ['advisory.id as advisory_id',
-            ' advisory.teacher_id',
-            ' advisory.section_id',
-            ' advisory.school_year_id',
+            'advisory.section_id',
+            'advisory.teacher_id',
+            'advisory.school_year_id',
             'students.*'
             ]
             )->find($request->student_id);

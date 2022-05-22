@@ -261,4 +261,14 @@ class StudentController extends Controller
         return response()->json($user, 200);
         
     }
+
+    public function adviser(Request $request){
+        $request->validate([
+            'adviser'=>'required',
+        ]);
+        $stud = Student::find($request->id);
+        $stud->advisory_id =  $request->adviser;
+        $stud->save();
+        return response()->json($stud, 200);
+    }
 }

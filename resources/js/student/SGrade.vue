@@ -64,6 +64,23 @@
                         </button>
                     </div>
                 </div>
+                <div class="col-md-6 d-print-none" v-if="gradeStatus.grade != null">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="inputGroupSelect01">Filter</label>
+                        </div>
+                        <select v-model="post.filter" @change="filterGrade(post.filter)" class="custom-select" id="inputGroupSelect01">
+                            <option v-for="(list, idx) in filters" :key="idx" v-bind:value="list.id">
+                            {{ extractAdvisory(list) }}
+                            </option>
+                            
+                        </select>
+                    </div>
+                    <span class="errors-material" v-if="errors.sex">{{errors.sex[0]}}</span>
+
+                   
+                </div>
+                
                 <div class="table-responsive" v-if="gradeStatus.grade != null">
                     <table class="table table-bordered table-dark table-sm">
                         <thead>
@@ -188,6 +205,7 @@ export default {
             errors:[],
             columns:columns,
             advisory_id:null,
+            filters:[],
             sortOrders:sortOrders,
             sortKey:'created_at',
             tableData:{
@@ -319,14 +337,15 @@ export default {
                      this.student = res.data;
                      this.levelSection(res.data);
                      this.levelSY(res.data);
-                    this.getMyGrade(res.data.id);
+                    this.getMyGrade(0);
                 });
             });
         },
         getMyGrade(id){
             this.$axios.get('sanctum/csrf-cookie').then(response => {
                 this.$axios.get('api/grade/student/'+id).then(res=>{
-                    console.log(res);
+                    this.levelSection(res.data);
+                    this.levelSY(res.data);
                     this.gradeStatus = res.data;
                    
                 }).catch(err=>{
@@ -451,14 +470,28 @@ export default {
             });
             this.syDisplay = ret;         
         },
-
-
+        
+        listofSLY(){
+             this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/grade/status/').then(res=>{
+                  this.filters = res.data;
+                });
+            });
+        },
+        extractAdvisory(val){
+            return "Grade "+ val.level_of+" "
+               +val.section_name+", "+"S.Y. "+ val.sy_name+" - " +(parseInt(val.sy_name)+ 1);
+        },
+        filterGrade(id){
+            this.getMyGrade(id);
+        }
         
     },
     mounted(){
         this.subjectData();
         this.listLevelSection()
         this.listLevelSY();
+        this.listofSLY();
         this.userExtract(window.Laravel.user.id);
         
     }

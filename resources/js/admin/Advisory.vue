@@ -40,10 +40,13 @@
                                 
                                 <td><strong>{{ list.id_number }}</strong></td>
                                 <td>{{ list.last_name }}, {{list.first_name}} {{list.middle_name}}</td>
-                                <td>{{ extractAdvisory(list.advise) }}</td>
+                                <td>{{ extractAdvisory(list) }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
-                                        <button type="button" @click="setupAdvisory(list)" class="btn btn-success btn-sm">Advisory</button>
+                                        <button type="button" @click="setupAdvisory(list)" class="btn btn-success btn-sm">
+                                            Advisory
+                                        </button>
+                                        <!-- <button type="button" @click="setupEditAdvisory(list)" class="btn btn-warning btn-sm">Edit</button> -->
                                     </div>
                                 </td>
                             </tr>
@@ -95,6 +98,44 @@
                     <div class="modal-footer">
                             <div class="btn-group">
                             <button type="button"  @click="saveAdvisory()"  class="btn btn-primary btn-lg">{{btn_cap}}</button>
+                            <button type="button" data-dismiss="modal"  class="btn btn-default btn-lg">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade edit-advisory">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4>Advisory Information</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label>Level and Section</label>
+                                <select class="form-control" v-model="post.section">
+                                    <option v-for="(list, index) in sections" :key="index" :value="list.id">
+                                       Grade {{ list.level_of }}, ({{ list.section_name }})
+                                    </option>
+                                </select>
+                                <span class="errors-material" v-if="errors.section">{{errors.section[0]}}</span>
+                            </div>
+                            <div class="col-md-12 form-group">
+                                <label>School Year</label>
+                                <select class="form-control" disabled v-model="post.school_year">
+                                    <option v-for="(list, index) in syears" :key="index" :value="list.id">
+                                       S.Y. {{ list.sy_name }} - {{ parseInt(list.sy_name) + 1}}
+                                    </option>
+                                </select>
+                                <span class="errors-material" v-if="errors.school_year">{{errors.school_year[0]}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                            <div class="btn-group">
+                            <button type="button"  @click="updateAdvisory()"  class="btn btn-primary btn-lg">{{btn_cap}}</button>
                             <button type="button" data-dismiss="modal"  class="btn btn-default btn-lg">Cancel</button>
                         </div>
                     </div>
@@ -241,27 +282,28 @@ export default {
             $('.teacher').modal('show');
         },
         saveAdvisory(){
+            this.$axios.get('sanction/csrf-cookie').then(response=>{             
+                this.$axios.post('api/advisory', this.post).then(res=>{
+                    this.post = {};
+                    $('.advisory').modal('hide');
+                    this.listOfTeacher();
+                }).catch(err=>{
+                    this.error = '';
+                    this.errors = err.response.data.errors
+                });
+            });
+        },
+        updateAdvisory(){
             this.$axios.get('sanction/csrf-cookie').then(response=>{
-                if(this.advise != null){
-                    this.$axios.put('api/advisory/'+this.post.advisory_id, this.post).then(res=>{
-                        this.post = {};
-                        $('.advisory').modal('hide');
-                        this.listOfTeacher();
-                    }).catch(err=>{
-                        this.error = '';
-                        this.errors = err.response.data.errors
-                    });
-                }else{                  
-                    this.$axios.post('api/advisory', this.post).then(res=>{
-                        this.post = {};
-                        $('.advisory').modal('hide');
-                        this.listOfTeacher();
-                    }).catch(err=>{
-                        this.error = '';
-                        this.errors = err.response.data.errors
-                    });
-                }
-
+                this.$axios.put('api/advisory/'+this.post.advisory_id, this.post).then(res=>{
+                    this.post = {};
+                    $('.edit-advisory').modal('hide');
+                    this.listOfTeacher();
+                }).catch(err=>{
+                    this.error = '';
+                    this.errors = err.response.data.errors
+                });
+               
             });
         },
         listOfTeacher(url='api/teacher'){
@@ -311,15 +353,21 @@ export default {
             this.post = {};
             this.errors = [];
             this.advise = data.advise;
-            if(data.advise != null){
-                 this.post['advisory_id'] = data.advise.id;
-                this.post.section = data.advise.section_id;
-                this.post.school_year = data.advise.school_year_id;
-            }else{
-                this.post = data;
+            this.post = data;
+            $('.advisory').modal('show');
+        },
+        setupEditAdvisory(data){
+            this.post = {};
+            this.errors = [];
+             let da = this.findActiveAdvisory(data);
+            this.advise = da;
+            if(da != null){
+                this.post['advisory_id'] =data.advisory_id;
+                this.post.section = da.section_id;
+                this.post.school_year = da.school_year_id;
             }
            
-            $('.advisory').modal('show');
+            $('.edit-advisory').modal('show');
         },
         
         listLevelSection(){
@@ -337,9 +385,19 @@ export default {
             });
         },
         extractAdvisory(data){
+            let adv = this.findActiveAdvisory(data);
             if(data != null){
-                return this.levelSection(data) + ", "+this.levelSY(data);
+                return this.levelSection(adv) + ", "+this.levelSY(adv);
             }
+        },
+        findActiveAdvisory(data){
+            let ret = {};
+             $.each(data.advise, function(key, value) {
+               if(value.id == data.advisory_id){
+                  ret = value;
+               }
+            });
+            return ret;
         },
         levelSection(data){
             let ret = "";

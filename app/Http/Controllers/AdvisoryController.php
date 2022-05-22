@@ -16,7 +16,15 @@ class AdvisoryController extends Controller
      */
     public function index()
     {
-        //
+        $adv = Advisory::join('sections', 'sections.id','=', 'advisory.section_id')
+            ->join('school_years', 'school_years.id', '=', 'advisory.school_year_id')
+            ->select(['advisory.*',
+             'sections.level_of',
+             'sections.section_name',
+             'school_years.sy_name',
+             ])->get();
+
+        return response()->json($adv, 200);
     }
 
     /**
@@ -41,30 +49,34 @@ class AdvisoryController extends Controller
             'section' => 'required',
             'school_year' => 'required',
         ]);
-        $filter = Advisory::where('section_id', $request->section)
-        ->where('school_year_id',$request->school_year)->first();
+        // $filter = Advisory::where('section_id', $request->section)
+        // ->where('school_year_id',$request->school_year)->first();
 
-        if(isset($filter)){
-            $errors = ['errors'=>['section' => ['Section has been taken!']]];
-            return response()->json($errors,422);
-        }
+        // if(isset($filter)){
+        //     $errors = ['errors'=>['section' => ['Section has been taken!']]];
+        //     return response()->json($errors,422);
+        // }
 
-        $cke = Advisory::where('section_id', $request->section)
-            ->where('school_year_id', $request->school_year)
-            ->where('teacher_id', $request->id)->first();
+        $sub = Advisory::where('section_id', $request->section)
+            ->where('school_year_id', $request->school_year)->first();
             
-        if(!isset($cke)){
+        $sec = Section::find($request->section);
+        $teach = Teacher::find($request->id);
+        if(!isset($sub)){
             $sub = Advisory::create([
                 'section_id'=> $request->section,
                 'school_year_id'=> $request->school_year,
                 'teacher_id'=> $request->id,
             ]);
+        }else{
+            $sub->teacher_id =  $request->id;
+            $sub->save();
         }
 
-        $sec = Section::find($request->section);
-        $teach = Teacher::find($request->id);
+     
         $teach->section_id = $sec->id;
         $teach->level_of = $sec->level_of;
+        $teach->advisory_id = $sub->id ;
         $teach->save();
         return response()->json($sub, 200);
     }
@@ -111,7 +123,7 @@ class AdvisoryController extends Controller
         $sub->save();
 
         $sec = Section::find($request->section);
-        $teach = Teacher::find($id);
+        $teach = Teacher::find($sub->teacher_id);
         $teach->section_id = $sec->id;
         $teach->level_of = $sec->level_of;
         $teach->save();

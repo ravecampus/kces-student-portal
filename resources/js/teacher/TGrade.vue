@@ -380,8 +380,8 @@ export default {
                   this.user = res.data;
                   let data = res.data;
                   if(data.advise != null){
-                        this.advisory_id = data.advise.id;
-                        this.tableData.advisory_id = data.advise.id;
+                        this.advisory_id = data.advisory_id;
+                        this.tableData.advisory_id = data.advisory_id;
                         this.listOfStudentA();
                   }
                 });
@@ -422,6 +422,7 @@ export default {
             return ret;
         },
         saveGrade(){
+            console.log(this.grade);
             this.computeGrade();
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.put('api/grade/'+this.grade.id, this.grade).then(res=>{
@@ -437,9 +438,9 @@ export default {
             $('.grade').modal('show');
         },
         computeGrade(){
-            if(this.grade.first > 0 && this.grade.second >0 && this.grade.third > 0 && this.grade.fourth >0){
+           if(this.grade.first > 0 && this.grade.second >0 && this.grade.third > 0 && this.grade.fourth >0){
                 let ret = (parseInt(this.grade.first) + parseInt(this.grade.second) + parseInt(this.grade.third) + parseInt(this.grade.fourth));
-                this.grade.average = ret /4;
+               this.grade.average = ret /4;
                 if(this.grade.average > 75){
                     this.grade.remarks = "Passed"
                 }else{
@@ -449,6 +450,7 @@ export default {
                 this.grade.average = "";
                 this.grade.remarks = ""
             }
+            
         },
         getAverage(data){
             let count = 0;
@@ -465,7 +467,7 @@ export default {
             return isNaN(rr) ? 0 : (ret / count); 
         },
         viewSummaryGrade(data){
-            this.$router.push({name:'tgradedownload',params:{'student_id':data.student_id}});
+            this.$router.push({name:'tgradedownload',params:{'student_id':data.id}});
         },
         checkSubject(data){
             // this.post = data;
@@ -486,7 +488,8 @@ export default {
 
                 });
             });
-        }
+        },
+
     },
     mounted(){
         this.subjectData();

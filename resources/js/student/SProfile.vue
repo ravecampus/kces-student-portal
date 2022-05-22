@@ -92,8 +92,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Nationality: </label>
-                                    <input type="text" v-model="post.birthpalce" class="form-control">
-                                     <span class="errors-material" v-if="errors.birthpale">{{errors.birthplace[0]}}</span>
+                                    <input type="text" v-model="post.nationality" class="form-control">
+                                     <span class="errors-material" v-if="errors.nationality">{{errors.nationality[0]}}</span>
                                 </div>
                             </div>
                         </div>
