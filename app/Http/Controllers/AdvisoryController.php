@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Advisory;
+use App\Models\Teacher;
+use App\Models\Section;
 
 class AdvisoryController extends Controller
 {
@@ -36,15 +38,34 @@ class AdvisoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'section_id' => 'required',
-            'school_year_id' => 'required',
+            'section' => 'required',
+            'school_year' => 'required',
         ]);
-        $sub = Advisory::create([
-            'section_id'=> $request->section_id,
-            'school_year_id'=> $request->school_year_id,
-            'teacher_id'=> $request->id,
-        ]);
+        $filter = Advisory::where('section_id', $request->section)
+        ->where('school_year_id',$request->school_year)->first();
 
+        if(isset($filter)){
+            $errors = ['errors'=>['section' => ['Section has been taken!']]];
+            return response()->json($errors,422);
+        }
+
+        $cke = Advisory::where('section_id', $request->section)
+            ->where('school_year_id', $request->school_year)
+            ->where('teacher_id', $request->id)->first();
+            
+        if(!isset($cke)){
+            $sub = Advisory::create([
+                'section_id'=> $request->section,
+                'school_year_id'=> $request->school_year,
+                'teacher_id'=> $request->id,
+            ]);
+        }
+
+        $sec = Section::find($request->section);
+        $teach = Teacher::find($request->id);
+        $teach->section_id = $sec->id;
+        $teach->level_of = $sec->level_of;
+        $teach->save();
         return response()->json($sub, 200);
     }
 
@@ -80,14 +101,20 @@ class AdvisoryController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'section_id' => 'required',
-            'school_year_id' => 'required',
+            'section' => 'required',
+            'school_year' => 'required',
         ]);
+
         $sub = Advisory::find($id);
-        $sub->section_id = $request->section_id;
-        $sub->school_year_id = $request->school_year_id;
+        $sub->section_id = $request->section;
+        $sub->school_year_id = $request->school_year;
         $sub->save();
 
+        $sec = Section::find($request->section);
+        $teach = Teacher::find($id);
+        $teach->section_id = $sec->id;
+        $teach->level_of = $sec->level_of;
+        $teach->save();
         return response()->json($sub, 200);
     }
 

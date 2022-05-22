@@ -21,6 +21,8 @@ class Teacher extends Model
         'birthdate',
         'birthplace',
         'user_id',
+        'section_id',
+        'level_of',
     ];
 
     public function account(){

@@ -19,7 +19,7 @@ class CreateSchedulesTable extends Migration
             $table->time('stime_to')->nullable();
             $table->integer('sday')->nullable();
             $table->integer('subject_id')->nullable();
-            $table->integer('teacher_advisory_id')->nullable();
+            $table->integer('advisory_id')->nullable();
             $table->timestamps();
         });
     }

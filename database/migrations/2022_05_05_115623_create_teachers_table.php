@@ -25,6 +25,8 @@ class CreateTeachersTable extends Migration
             $table->text('birthplace')->nullable();
             $table->integer('deleted')->default(0);
             $table->integer('user_id')->default(0);
+            $table->integer('section_id')->nullable();
+            $table->integer('level_of')->nullable();
             // $table->unsignedBigInteger('user_id');
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

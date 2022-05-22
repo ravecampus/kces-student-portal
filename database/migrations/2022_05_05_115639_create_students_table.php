@@ -30,7 +30,7 @@ class CreateStudentsTable extends Migration
             $table->integer('age')->nullable();
             $table->integer('deleted')->default(0);
             $table->integer('user_id')->default(0);
-            // $table->integer('advisory_id')->nullable();
+            $table->integer('advisory_id')->nullable();
             // $table->unsignedBigInteger('user_id');
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();

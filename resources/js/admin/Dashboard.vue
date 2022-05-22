@@ -11,8 +11,15 @@
                     <router-link :to="{name:'adminteacher'}" >Teachers</router-link>
                 </li>
                 <li>
+                    <router-link :to="{name:'adminstudent'}" >Students</router-link>
+                </li>
+                <li>
                     <router-link :to="{name:'advisory'}" >Advisory</router-link>
                 </li>
+                 <li>
+                    <router-link :to="{name:'subjectlevelof'}" >Subjects per Level</router-link>
+                </li>
+	           
 	            </ul>
 	          </li>
 	          <li>

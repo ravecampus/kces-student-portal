@@ -119,15 +119,19 @@
                                         </td>
                                         <td>{{ getAverage(gradeStatus.grade)}}</td>
                                         <td colspan="2">
-                                            <button type="button" @click="finalGrade(gradeStatus)" class="btn btn-primary">
+                                            <!-- <button type="button" @click="finalGrade(gradeStatus)" class="btn btn-primary">
                                                 {{ btn_final }}
-                                            </button>
+                                            </button> -->
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                         <div class="d-flex justify-content-center" v-if="gradeStatus.grade == null">
+                            <span class="errors-material" v-if="errors.grade">{{errors.grade[0]}}</span>
+                        </div>
                         <div class="d-flex justify-content-center" v-if="gradeStatus.grade == null">
+                           
                             <button type="button"  @click="generateSubject()" class="btn btn-warning btn-lg">Generate Subjects</button>
                         </div>
                     </div>
@@ -278,6 +282,7 @@ export default {
             $('.grade-setup').modal('show');
         },
         showGrade(data){
+            console.log(data);
             this.post = data;
             this.listOfGrade();
             $('.grade').modal('show');
@@ -384,15 +389,17 @@ export default {
         },
         generateSubject(){
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.post('api/grade/', this.post).then(res=>{
+                this.$axios.post('api/grade/',this.post).then(res=>{
                   this. listOfStudentA();
                   this.listOfGrade();
+                }).catch(err=>{
+                    this.errors = err.response.data.errors
                 });
             });
         },
         listOfGrade(){
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.get('api/grade/'+this.post.id).then(res=>{
+                this.$axios.get('api/grade/'+this.post.advisory_id).then(res=>{
                    this.gradeStatus = res.data;
                 });
             });

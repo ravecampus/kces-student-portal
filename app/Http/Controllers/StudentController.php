@@ -98,12 +98,12 @@ class StudentController extends Controller
     {
         // $student = Student::where('user_id', $id)->firstOrFail();
         $student = Student::with('account')
-        ->join('teacher_advisory','teacher_advisory.student_id','=',"students.id")
-        ->join('advisory','advisory.id','=',"teacher_advisory.advisory_id")
+        ->join('advisory','advisory.id','=',"students.advisory_id")
         ->where('deleted',0)
         ->where('students.user_id',$id)->select(
-            ['teacher_advisory.id as teacher_advisory_id',
+            ['advisory.id as advisory_id',
             'students.*',
+            'advisory.teacher_id',
             'advisory.section_id',
             'advisory.school_year_id',
             ]
@@ -195,7 +195,7 @@ class StudentController extends Controller
                 'password' => bcrypt($request->password)
             ])->id;
 
-            $stud = Student::find($request->student_id);
+            $stud = Student::find($request->id);
             $stud->user_id = $user;
             $stud->save();
         }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateGradeStatusTable extends Migration
+class CreateSubjectPerLevelTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateGradeStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('grade_status', function (Blueprint $table) {
+        Schema::create('subject_per_level', function (Blueprint $table) {
             $table->id();
-            $table->integer('advisory_id')->nullable();
-            $table->integer('status')->nullable();
+            $table->integer('subject_id')->nullable();
+            $table->integer('level_of')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateGradeStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grade_status');
+        Schema::dropIfExists('subject_per_level');
     }
 }

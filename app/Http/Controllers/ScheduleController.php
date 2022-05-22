@@ -62,7 +62,6 @@ class ScheduleController extends Controller
         $auth = Auth::id();
         $teacher = Teacher::where('user_id', $auth)->first()->id;
         $ad = Advisory::where('teacher_id', $teacher)->first()->id;
-        $tad = TeacherAdvisory::where('advisory_id', $ad)->first()->id;
         $from = $request->time_from;
         $to = $request->time_to;
         $sch = Schedule::create([
@@ -70,7 +69,7 @@ class ScheduleController extends Controller
             'sday'=>$request->day,
             'stime_from'=>Carbon::createFromTime($from['hours'], $from['minutes'],$from['seconds']),
             'stime_to'=>Carbon::createFromTime($to['hours'], $to['minutes'], $to['seconds']),
-            'teacher_advisory_id'=>$tad,
+            'advisory_id'=>$ad,
         ]);
         return response()->json($sch, 200);
     }
@@ -139,7 +138,7 @@ class ScheduleController extends Controller
     public function getSchedule($id){
         $sch = Schedule::join('subjects', 'subjects.id','=', 'schedules.subject_id')
         ->select(['schedules.*','subjects.subject_name'])
-        ->where('schedules.teacher_advisory_id', $id)->get();
+        ->where('schedules.advisory_id', $id)->get();
         return response()->json($sch,200);
     }
 }

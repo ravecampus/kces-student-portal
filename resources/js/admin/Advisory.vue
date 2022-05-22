@@ -74,21 +74,21 @@
                         <div class="row">
                             <div class="col-md-12 form-group">
                                 <label>Level and Section</label>
-                                <select class="form-control" v-model="post.section_id">
+                                <select class="form-control" v-model="post.section">
                                     <option v-for="(list, index) in sections" :key="index" :value="list.id">
                                        Grade {{ list.level_of }}, ({{ list.section_name }})
                                     </option>
                                 </select>
-                                <span class="errors-material" v-if="errors.section_id">{{errors.section_id[0]}}</span>
+                                <span class="errors-material" v-if="errors.section">{{errors.section[0]}}</span>
                             </div>
                             <div class="col-md-12 form-group">
                                 <label>School Year</label>
-                                <select class="form-control" v-model="post.school_year_id">
+                                <select class="form-control" v-model="post.school_year">
                                     <option v-for="(list, index) in syears" :key="index" :value="list.id">
                                        S.Y. {{ list.sy_name }} - {{ parseInt(list.sy_name) + 1}}
                                     </option>
                                 </select>
-                                <span class="errors-material" v-if="errors.school_year_id">{{errors.school_year_id[0]}}</span>
+                                <span class="errors-material" v-if="errors.school_year">{{errors.school_year[0]}}</span>
                             </div>
                         </div>
                     </div>
@@ -309,11 +309,12 @@ export default {
 
         setupAdvisory(data){
             this.post = {};
+            this.errors = [];
             this.advise = data.advise;
             if(data.advise != null){
                  this.post['advisory_id'] = data.advise.id;
-                this.post.section_id = data.advise.section_id;
-                this.post.school_year_id = data.advise.school_year_id;
+                this.post.section = data.advise.section_id;
+                this.post.school_year = data.advise.school_year_id;
             }else{
                 this.post = data;
             }

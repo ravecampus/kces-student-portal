@@ -14,6 +14,7 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\SubjectLevelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,5 +68,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::resource('schedule', ScheduleController::class);
     Route::resource('announce', AnnouncementController::class);
     Route::resource('file', FileController::class);
+    Route::resource('subject-level', SubjectLevelController::class);
 
 });

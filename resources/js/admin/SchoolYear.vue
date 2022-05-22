@@ -70,7 +70,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12 form-group">
-                                <label>Section Name</label>
+                                <label>SY Name</label>
                                 <input type="text" v-model="post.sy_name" class="form-control">
                                 <span class="errors-material" v-if="errors.sy_name">{{errors.sy_name[0]}}</span>
                             </div>

@@ -1,37 +1,30 @@
 <template>
     <div class="container">
-        <button type="button" @click="addToClass()" class="btn btn-primary">
+        <button type="button" @click="openModalStudent()" class="btn btn-primary">
             <span class="fa fa-plus"></span>
-            Add to your Class
-            
-        </button>
-        <button type="button" v-if="students.length > 0" @click="classList()" class="btn btn-success ml-1">
-            <span class="fa fa-print"></span>
-          Print Class List
-            
-        </button>
+            Add Student</button>
         <div class="row border-top border-bottom mt-2">
             <div class="col-md-12">
-                <h5 class="mt-2">MY CLASS</h5>
+                <h5>KATIDTUAN STUDENTS</h5>
                  <div class="card-body">
-                    <div class="col-md-12">
+                    <div class="col-md-12 mt-2">
                         <div class="row search-head">
 
-                            <div class="col-md-7 mb-2 pl-0">
-                                <input type="text" class="form-control" v-model="tableData.search"  placeholder="Search ..." @keyup.enter="listOfStudentA()">
+                            <div class="col-md-9 mb-2 pl-0 pr-0">
+                                <input type="text" class="form-control" v-model="tableData.search"  placeholder="Search ..." @keyup.enter="listOfStudent()">
                             </div>
-                            <!-- <div class="col-md-3">
+                            <!-- <div class="col-md-3 pl-0 pr-0">
                                 <div class="col-md-12 pull-right">
-                                    <select class="form-control" aria-placeholder="sort" v-model="tableData.archive" @change="listOfStudentA()">
+                                    <select class="form-control" aria-placeholder="sort" v-model="tableData.archive" @change="listOfStudent()">
                                         <option value="0">Active</option>
                                         <option value="1">Inactive</option>
                 
                                     </select>
                                 </div>
                             </div> -->
-                            <div class="col-md-2">
+                            <div class="col-md-3 pl-0 pr-0">
                                 <div class="col-md-12 pull-right">
-                                    <select class="form-control" aria-placeholder="sort" v-model="tableData.length" @change="listOfStudentA()">
+                                    <select class="form-control" aria-placeholder="sort" v-model="tableData.length" @change="listOfStudent()">
                                         <option value="5" selected="selected">5</option>
                                         <option value="10">10</option>
                                         <option value="20">20</option>
@@ -48,17 +41,16 @@
                                 <td><strong>{{ list.lrn }}</strong></td>
                                 <td><strong>{{ list.last_name }}</strong>, {{list.first_name}} {{list.middle_name}}</td>
                                 <td>{{ extractSex(list.sex) }}</td>
-                                <td>{{list.account ==null? 'No' : 'Yes' }}</td>
                                 <td>
                                     <div class="btn-group pull-right">
                                         <button type="button" @click="showCredential(list)" class="btn btn-success btn-sm">Credential</button>
-                                        <button type="button" @click="editInfo(list)" class="btn btn-warning btn-sm">Edit Info</button>
-                                        <button type="button" @click="removeClass(list)" class="btn btn-danger btn-sm">Remove</button>
+                                        <button type="button" @click="showeditStudent(list)" class="btn btn-warning btn-sm">Edit</button>
+                                        <!-- <button type="button" @click="setasClass(list)" class="btn btn-success btn-sm">Set as</button> -->
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="5" v-show="!noData(students)">
+                                <td colspan="4" v-show="!noData(students)">
                                     No Result Found!
                                 </td>
                             </tr>
@@ -73,6 +65,30 @@
                         </div>
                 </div>
             </div>
+            <!-- <div class="col-md-4">
+                <div class="card mt-2" v-if="listasClass.length > 0">
+                    <div class="card card-body">
+                        <h5>My students</h5>
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr v-for="(list, index) in listasClass" :key="index">
+                                     <td>{{ list.lrn }}</td>
+                                    <td>{{ list.last_name }}, {{ list.first_name }} {{ list.middle_name }}</td>
+                                   
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm" @click="removeStudent(index)">
+                                            <span class="fa fa-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="btn-group" v-if="listasClass.length > 0">
+                            <button type="button" @click="saveAsStudent()" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
         </div>
          <div class="modal fade student">
             <div class="modal-dialog modal-lg">
@@ -200,6 +216,7 @@
                     </div>
                 </div>
             </div>
+             
              <div class="modal fade credential">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -231,30 +248,6 @@
                                 <div class="btn-group">
                                 <button type="button"  @click="saveCredential(post)"  class="btn btn-success">Save</button>
                                 <button type="button" data-dismiss="modal"  class="btn btn-default btn-sm">Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-             <div class="modal fade remove-class">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <!-- <div class="modal-header">
-                            <h4>ORGANIZATION CATEGORY</h4>
-                        </div> -->
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    Do you want to remove <strong>{{ post.lrn }} </strong>?
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                                <div class="btn-group">
-                                <button type="button"  @click="deleteClass(post)"  class="btn btn-danger btn-sm">Yes</button>
-                                <button type="button" data-dismiss="modal"  class="btn btn-default btn-sm">No</button>
                             </div>
                         </div>
                     </div>
@@ -295,7 +288,6 @@ export default {
             {label:'LRN', name:'lrn'},
             {label:'Name', name:'last_name'},
             {label:'Sex', name:'sex'},
-            {label:'Credential', name:null},
             {label:'', name:null},
             ];
         
@@ -306,9 +298,11 @@ export default {
             btn_cap:"Save",
             students:[],
             user:{},
+            ls:[],
             post:{
-                
             },
+            listasClass:[],
+            listStud:[],
             errors:[],
             columns:columns,
             advisory_id:null,
@@ -321,7 +315,6 @@ export default {
                 column:0,
                 archive:0,
                 dir:'desc',
-                advisory_id:0,
             },
             pagination:{
                 lastPage:'',
@@ -336,14 +329,6 @@ export default {
         }
     },
     methods:{
-        removeClass(data){
-            console.log(data);
-            this.post = data;
-            $('.remove-class').modal('show');
-        },
-        addToClass(){
-            this.$router.push({name:'tstudentinfo', params:{'advisory_id':this.advisory_id}});
-        },
         openModalStudent(){
             this.post = {};
             $('.student').modal('show');
@@ -357,7 +342,7 @@ export default {
                         this.btn_cap = "Save";
                         this.post = {};
                         $('.student').modal('hide');
-                        this.listOfStudentA();
+                        this.listOfStudent();
                     }).catch(err=>{
                         this.btn_cap = "Save";
                         this.error = '';
@@ -368,7 +353,7 @@ export default {
                         this.btn_cap = "Save";
                         this.post = {};
                         $('.student').modal('hide');
-                        this.listOfStudentA();
+                        this.listOfStudent();
                     }).catch(err=>{
                         this.error = '';
                         this.btn_cap = "Save";
@@ -379,9 +364,8 @@ export default {
             });
         },
 
-        listOfStudentA(url='api/teacher-advisory'){
+        listOfStudent(url='api/student'){
             this.$axios.get('sanctum/csrf-cookie').then(response => {
-                
                 this.tableData.draw ++;
                 this.$axios.get(url,{params:this.tableData}).then(res=>{
                 let data = res.data;
@@ -413,7 +397,7 @@ export default {
                 this.sortOrders[key] = this.sortOrders[key] * -1;
                 this.tableData.column = this.getIndex(this.columns, 'name', key);
                 this.tableData.dir = this.sortOrders[key] === 1 ? 'asc' : 'desc';
-                this.listOfStudentA();
+                this.listOfStudent();
             }
         },
         getIndex(array, key, value){
@@ -425,7 +409,7 @@ export default {
         extractSex(data){
             return data == 1 ? 'Male' : 'Female';
         },
-        editInfo(data){
+        showeditStudent(data){
             this.post = data;
             $('.student').modal('show');
         },
@@ -462,6 +446,41 @@ export default {
           
             $('.credential').modal('show');
         },
+        userExtract(id){
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.get('api/teacher/'+id).then(res=>{
+                  this.user = res.data;
+                  let data = res.data;
+                  if(data.advise != null){
+                        this.advisory_id = data.advise.id;
+                  }
+                //   this.userAdvise(res.data.id)
+                });
+            });
+        },
+        setasClass(data){
+            this.listasClass.push(data);
+            this.listasClass = this.useUnique(this.listasClass,(a, b) => a.id == b.id);
+        },
+        useUnique(vl,fn){
+           let arr =  vl.reduce((acc, v) => {
+                if (!acc.some(x => fn(v, x))) acc.push(v);
+                return acc;
+            },[])
+            return arr; 
+        },
+        removeStudent(index){
+             this.listasClass.splice(index, 1);
+        },
+        saveAsStudent(){
+            this.post['adviser'] = this.$route.params.advisory_id;
+            this.post['students'] = this.listasClass;
+            this.$axios.get('sanctum/csrf-cookie').then(res=>{
+                this.$axios.post('api/teacher-advisory/', this.post).then(res=>{
+                   this.$router.push({name:'tstudent'});
+                });
+            });
+        },
         saveCredential(data){
             this.$axios.get('sanctum/csrf-cookie').then(res=>{
                 this.$axios.post('api/student/credential/',data).then(res=>{
@@ -474,44 +493,11 @@ export default {
                 });
             });
         }
-        ,userExtract(id){
-            this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.get('api/teacher/'+id).then(res=>{
-                  this.user = res.data;
-                  let data = res.data;
-                  if(data.advise != null){
-                      console.log(data);
-                        this.advisory_id = data.advise.id;
-                        this.tableData.advisory_id = data.advise.id;
-                        this.listOfStudentA();
-                  }
-                //   this.userAdvise(res.data.id)
-                });
-            });
-        },
-        studentwithAdviser(){
-            this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.get('api/teacher-advisory/').then(res=>{
-                  
-                });
-            });
-        },
-        deleteClass(){
-            this.$axios.get('sanctum/csrf-cookie').then(res=>{
-                this.$axios.post('api/teacher-advisory/klass', this.post).then(res=>{
-                    this.post = {};
-                    this.listOfStudentA();
-                     $('.remove-class').modal('hide');
-                });
-            });
-        },
-        classList(){
-            this.$router.push({name:'tclasslist', params:{'id': this.advisory_id}});
-        }
         
     },
     mounted(){
-        this.userExtract(window.Laravel.user.id);
+        this.listOfStudent();
+        // this.userExtract(window.Laravel.user.id);
     }
 
 }

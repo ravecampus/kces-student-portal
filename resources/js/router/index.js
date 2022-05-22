@@ -12,6 +12,8 @@ import SchoolYear from '../admin/SchoolYear';
 import AdminProfile from '../admin/AdminProfile';
 import AdminAnnounce from '../admin/Announcement';
 import AdminFiles from '../admin/Files';
+import AdminStudent from '../admin/Student';
+import AdminSubjectLevel from '../admin/SubjectLevelOf';
 
 
 import TStudent from '../teacher/Tstudent';
@@ -87,6 +89,16 @@ export const routes = [
                 name:'adminfiles',
                 path:'/admin/files',
                 component: AdminFiles,
+            },
+            {
+                name:'adminstudent',
+                path:'/admin/students',
+                component: AdminStudent,
+            },
+            {
+                name:'subjectlevelof',
+                path:'/admin/subject-level',
+                component: AdminSubjectLevel,
             },
         ]
     },
@@ -199,6 +211,8 @@ const adminRoutes = [
     'adminprofile',
     'adminannounce',
     'adminfiles',
+    'adminstudent',
+    'subjectlevelof'
 ];
 
 const teacherRoutes = [

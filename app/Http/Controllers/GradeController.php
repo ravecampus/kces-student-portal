@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Grade;
 use App\Models\GradeStatus;
 use App\Models\Subject;
+use App\Models\Student;
+use App\Models\Teacher;
+use App\Models\SubjectLevel;
+use Illuminate\Support\Facades\Auth;
 
 class GradeController extends Controller
 {
@@ -37,25 +41,37 @@ class GradeController extends Controller
      */
     public function store(Request $request)
     {
-        $id = $request->id;
-        $chk = GradeStatus::where('teacher_advisory_id', $id)->first();
-        if(!$chk){
-            $gs = GradeStatus::create([
-                'teacher_advisory_id'=>$id
-            ]);
+        $id = $request->advisory_id;
 
-            $sub = Subject::all();
-            foreach ($sub as $key => $value) {
-            $g = Grade::where('subject_id', $value->id)->where('grade_status_id', $gs->id)->first();
-                if(!isset($g)){
-                    Grade::create([
-                        'subject_id' =>$value->id,
-                        'grade_status_id' => $gs->id
-                    ]);
+        $chk = GradeStatus::where('advisory_id', $id)->first();
+        $auth = Auth::id();
+
+        $teach = Teacher::where('user_id', $auth)->first();
+      
+        $sub = SubjectLevel::where('level_of', $teach->level_of)->get();
+        // dd( count($sub) );
+        if(count($sub) <= 0 ){
+            $errors = ['errors'=>['grade' => ['Subjects are not set at this grade level! Kindly contact the Administrator!']]];
+            return response()->json($errors,422);
+        }else{
+            if(!$chk){
+                $gs = GradeStatus::create([
+                    'advisory_id'=>$id
+                ]);
+
+            
+                foreach ($sub as $key => $value) {
+                $g = Grade::where('subject_id', $value->id)->where('grade_status_id', $gs->id)->first();
+                    if(!isset($g)){
+                        Grade::create([
+                            'subject_id' =>$value->subject_id,
+                            'grade_status_id' => $gs->id
+                        ]);
+                    }
                 }
             }
+            return response()->json([], 200);
         }
-        return response()->json([], 200);
     }
 
     /**
@@ -66,7 +82,7 @@ class GradeController extends Controller
      */
     public function show($id)
     {
-        $grade = GradeStatus::with('grade')->where('teacher_advisory_id',$id)->first();
+        $grade = GradeStatus::with('grade')->where('advisory_id',$id)->first();
         return response()->json($grade, 200);
     }
 
@@ -114,8 +130,10 @@ class GradeController extends Controller
     }
 
     public function studentGrade($id){
-        $grade = GradeStatus::with('grade')->join('teacher_Advisory', 'teacher_Advisory.id','=','grade_status.teacher_advisory_id')
-        ->where('teacher_Advisory.student_id', $id)
+        $stud = Student::find($id);
+        $grade = GradeStatus::with('grade')->join('advisory', 'advisory.id','=','grade_status.advisory_id')
+        ->where('grade_status.advisory_id',$stud->advisory_id)
+        ->select(['grade_status.*', 'advisory.teacher_id','advisory.school_year_id', 'advisory.section_id'])
         ->first();
         return response()->json($grade, 200);
     }

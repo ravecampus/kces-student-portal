@@ -132,7 +132,7 @@ export default {
                     this.student = res.data;
                     this.levelSection(res.data);
                     this.levelSY(res.data);
-                    this.listSchedule(res.data.teacher_advisory_id);
+                    this.listSchedule(res.data.advisory_id);
                 });
             });
         },

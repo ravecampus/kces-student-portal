@@ -51,20 +51,9 @@ class SubjectsTableSeeder extends Seeder
         ]);
         DB::table('subjects')->insert([
             'id' => 7,
-            'subject_name' => 'Music',
+            'subject_name' => 'MAPEH',
         ]);
-        DB::table('subjects')->insert([
-            'id' => 8,
-            'subject_name' => 'Art',
-        ]);
-        DB::table('subjects')->insert([
-            'id' => 9,
-            'subject_name' => 'Physical Education (PE)',
-        ]);
-        DB::table('subjects')->insert([
-            'id' => 10,
-            'subject_name' => 'Health',
-        ]);
+
         DB::table('subjects')->insert([
             'id' => 11,
             'subject_name' => 'Edukasyon sa Pagpapakatao (EsP)',

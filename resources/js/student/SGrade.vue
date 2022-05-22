@@ -326,6 +326,7 @@ export default {
         getMyGrade(id){
             this.$axios.get('sanctum/csrf-cookie').then(response => {
                 this.$axios.get('api/grade/student/'+id).then(res=>{
+                    console.log(res);
                     this.gradeStatus = res.data;
                    
                 }).catch(err=>{
@@ -422,7 +423,7 @@ export default {
             const print = window;
             print.focus();
             print.print();
-            print.close();
+            // print.close();
         },
         levelSection(data){
             let ret = "";

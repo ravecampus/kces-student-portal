@@ -14,6 +14,6 @@ class Schedule extends Model
         'sday',
         'stime_from', 
         'stime_to', 
-        'teacher_advisory_id'
+        'advisory_id'
     ];
 }

@@ -24,9 +24,18 @@ class TeacherAdvisoryController extends Controller
         $advisory = $request->advisory_id;
         $searchValue = $request->search;
         $query = Student::with('account')
-        ->join('teacher_advisory','teacher_advisory.student_id','=',"students.id")
+        ->join('advisory','advisory.id','=',"students.advisory_id")
+        ->select(
+            ['advisory.id as advisory_id',
+            'advisory.teacher_id',
+            'advisory.section_id',
+            'advisory.school_year_id',
+            'students.*'
+            ])
         ->where('deleted',$archive)
-        ->where('advisory_id',$advisory)->orderBy('students.'.$columns[$column], $dir);
+        ->where('advisory.id',$advisory)
+       
+        ->orderBy('students.'.$columns[$column], $dir);
     
         if($searchValue){
             $query->where(function($query) use ($searchValue){
@@ -60,14 +69,17 @@ class TeacherAdvisoryController extends Controller
     public function store(Request $request)
     {
         foreach ($request->students as $value) {
-           $chk = TeacherAdvisory::where('advisory_id', $request->adviser)
-           ->where('student_id', $value['id'])->first();
-           if(!isset($chk)){
-                $ta = TeacherAdvisory::create([
-                    'advisory_id' => $request->adviser,
-                    'student_id' => $value['id'],
-                ]);
-           }
+        //    $chk = TeacherAdvisory::where('advisory_id', $request->adviser)
+        //    ->where('student_id', $value['id'])->first();
+        //    if(!isset($chk)){
+                // $ta = TeacherAdvisory::create([
+                //     'advisory_id' => $request->adviser,
+                //     'student_id' => $value['id'],
+                // ]);
+                $student = Student::find($value['id']);
+                $student->advisory_id = $request->adviser;
+                $student->save();
+        //    }
         }
     
 
@@ -121,10 +133,13 @@ class TeacherAdvisoryController extends Controller
 
     public function getStudent(Request $request){
        $student = Student::with('account')
-        ->join('teacher_advisory','teacher_advisory.student_id','=',"students.id")
+        ->join('advisory','advisory.id','=',"students.advisory_id")
         ->where('deleted',0)
-        ->where('teacher_advisory.advisory_id',$request->id)->select(
-            ['teacher_advisory.id as teacher_advisory_id',
+        ->where('advisory.id',$request->id)->select(
+            ['advisory.id as advisory_id',
+            ' advisory.teacher_id',
+            ' advisory.section_id',
+            ' advisory.school_year_id',
             'students.*'
             ]
             )->find($request->student_id);
@@ -132,16 +147,17 @@ class TeacherAdvisoryController extends Controller
     }
 
     public function removeKlass(Request $request){
-        $dta =  TeacherAdvisory::find($request->id);
-        $dta->delete();
+        $dta =  Student::find($request->id);
+        $dta->advisory_id  = null;
+        $dta->save();
         return response()->json($dta,200);
     }
 
     public function getStudentAdvise($id){
         $stud = Student::with('account')
-        ->join('teacher_advisory','teacher_advisory.student_id','=',"students.id")
+        ->join('advisory','advisory.id','=',"students.advisory_id")
         ->where('deleted', 0)
-        ->where('teacher_advisory.advisory_id',$id)->orderBy('students.last_name', 'asc')->get();
+        ->where('advisory.id',$id)->orderBy('students.last_name', 'asc')->get();
 
         return response()->json($stud, 200);
     }
