@@ -55,11 +55,11 @@ class SubjectsTableSeeder extends Seeder
         ]);
 
         DB::table('subjects')->insert([
-            'id' => 11,
+            'id' => 8,
             'subject_name' => 'Edukasyon sa Pagpapakatao (EsP)',
         ]);
         DB::table('subjects')->insert([
-            'id' => 12,
+            'id' => 9,
             'subject_name' => 'Homeroom Guidance',
         ]);
 
